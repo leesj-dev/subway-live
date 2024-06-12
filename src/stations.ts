@@ -1,4 +1,14 @@
-const stations = {
+interface Station {
+    id: string;
+    name: string;
+}
+
+interface Stations {
+    [line: string]: Station[];
+}
+
+
+const stations: Stations = {
     "1호선": [
         { id: "PSS1M164", name: "다대포해수욕장" },
         { id: "PSS1M163", name: "다대포항" },

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import stations from "./stations";
 import LineSelector from "./LineSelector";
@@ -64,23 +64,31 @@ const SubwayInfo: React.FC = () => {
     };
 
     useEffect(() => {
-        let intervalId: NodeJS.Timeout;
+        let intervalId: ReturnType<typeof setInterval>;
         if (arrivalInfo) {
             intervalId = setInterval(() => {
                 setArrivalInfo((prevArrivalInfo) => ({
-                    ...prevArrivalInfo,
-                    up_info: {
-                        times: prevArrivalInfo?.up_info?.times?.map((train) => ({
-                            ...train,
-                            remain_sec: Math.max(0, train.remain_sec - 1),
-                        })) ?? null,
-                    },
-                    down_info: {
-                        times: prevArrivalInfo?.down_info?.times?.map((train) => ({
-                            ...train,
-                            remain_sec: Math.max(0, train.remain_sec - 1),
-                        })) ?? null,
-                    },
+                    ...prevArrivalInfo!,
+                    up_info:
+                        prevArrivalInfo!.up_info && prevArrivalInfo!.up_info.times
+                            ? {
+                                  ...prevArrivalInfo!.up_info,
+                                  times: prevArrivalInfo!.up_info.times.map((train) => ({
+                                      ...train,
+                                      remain_sec: Math.max(0, train.remain_sec - 1),
+                                  })),
+                              }
+                            : prevArrivalInfo!.up_info,
+                    down_info:
+                        prevArrivalInfo!.down_info && prevArrivalInfo!.down_info.times
+                            ? {
+                                  ...prevArrivalInfo!.down_info,
+                                  times: prevArrivalInfo!.down_info.times.map((train) => ({
+                                      ...train,
+                                      remain_sec: Math.max(0, train.remain_sec - 1),
+                                  })),
+                              }
+                            : prevArrivalInfo!.down_info,
                 }));
             }, 1000);
         }
