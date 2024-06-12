@@ -2,8 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+    font-family: "Pretendard";
+    src: url("/fonts/Pretendard-Regular.subset.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Pretendard";
+    src: url("/fonts/Pretendard-Bold.subset.woff2") format("woff2");
+    font-weight: 700;
+    font-style: bold;
+}
+
 :root {
-    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    font-family: Pretendard, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
     font-weight: 400;
 

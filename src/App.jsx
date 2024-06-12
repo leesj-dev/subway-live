@@ -1,10 +1,10 @@
 import "./App.css";
-import SubwayInfo from "./SubwayInfo";
+import ArrivalInfo from "./ArrivalInfo";
 
 function App() {
     return (
         <div className="App">
-            <SubwayInfo />
+            <ArrivalInfo />
         </div>
     );
 }
