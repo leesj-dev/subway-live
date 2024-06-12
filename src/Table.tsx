@@ -18,19 +18,19 @@ interface ArrivalTableProps {
 const Table: React.FC<ArrivalTableProps> = ({ upInfo, downInfo, formatTime, destinations, currentLine }) => {
     return (
         <div className="mt-14">
-            <div className="grid grid-cols-2 gap-8 sm:grid-cols-1">
+            <div className="grid grid-rows-2 gap-8 md:grid-rows-1 md:grid-cols-2 md:gap-5">
                 <div>
                     <h2 className="text-lg font-bold mb-2 text-slate-900 dark:text-slate-100">{destinations[currentLine][0]}</h2>
                     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 table-fixed">
                         <thead className="bg-gray-50 dark:bg-gray-800">
                             <tr className="h-10">
-                                <th scope="col" className="w-10 h-10 px-3 py-3 text-center text-xs font-medium text-gray-500 tracking-wider dark:text-gray-300">
+                                <th scope="col" className="w-10 h-10 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider dark:text-gray-300">
                                      열차번호
                                 </th>
-                                <th scope="col" className="w-24 h-10 px-3 py-3 text-center text-xs font-medium text-gray-500 tracking-wider dark:text-gray-300">
+                                <th scope="col" className="w-24 h-10 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider dark:text-gray-300">
                                     행선지
                                 </th>
-                                <th scope="col" className="w-16 h-10 px-3 py-3 text-center text-xs font-medium text-gray-500 tracking-wider dark:text-gray-300">
+                                <th scope="col" className="w-16 h-10 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider dark:text-gray-300">
                                     남은 시간
                                 </th>
                             </tr>
@@ -60,13 +60,13 @@ const Table: React.FC<ArrivalTableProps> = ({ upInfo, downInfo, formatTime, dest
                     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 table-fixed">
                         <thead className="bg-gray-50 dark:bg-gray-800">
                             <tr>
-                                <th scope="col" className="w-10 h-10 px-3 py-3 text-center text-xs font-medium text-gray-500 tracking-wider dark:text-gray-300">
+                                <th scope="col" className="w-10 h-10 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider dark:text-gray-300">
                                     열차번호
                                 </th>
-                                <th scope="col" className="w-24 h-10 px-3 py-3 text-center text-xs font-medium text-gray-500 tracking-wider dark:text-gray-300">
+                                <th scope="col" className="w-24 h-10 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider dark:text-gray-300">
                                     행선지
                                 </th>
-                                <th scope="col" className="w-16 h-10 px-3 py-3 text-center text-xs font-medium text-gray-500 tracking-wider dark:text-gray-300">
+                                <th scope="col" className="w-16 h-10 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider dark:text-gray-300">
                                     남은 시간
                                 </th>
                             </tr>
