@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import stations from "./stations";
 import LineSelector from "./LineSelector";
@@ -32,6 +32,7 @@ const SubwayInfo: React.FC = () => {
     const [selectedStation, setSelectedStation] = useState<string>("");
     const [arrivalInfo, setArrivalInfo] = useState<ArrivalInfo | null>(null);
     const [currentLine, setCurrentLine] = useState<string>(""); // 노선 변경 시 조회 이전에 행선지 바뀌는 것 방지
+    const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
     const handleLineChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedLine(e.target.value);
@@ -51,6 +52,14 @@ const SubwayInfo: React.FC = () => {
             setArrivalInfo(response.data);
         }
         setCurrentLine(selectedLine);
+
+        // clear any existing interval
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+        }
+
+        // set new interval to fetch data every 10 seconds
+        intervalRef.current = setInterval(fetchArrivalInfo, 10000);
     };
 
     const formatTime = (seconds: number) => {
@@ -90,15 +99,19 @@ const SubwayInfo: React.FC = () => {
                               }
                             : prevArrivalInfo!.down_info,
                 }));
-            }, 1000);
+            }, 1000);   
         }
         return () => clearInterval(intervalId);
     }, [arrivalInfo]);
 
     useEffect(() => {
-        const intervalId = setInterval(fetchArrivalInfo, 10000);
-        return () => clearInterval(intervalId);
-    });
+        // clear interval when component unmounts
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+        };
+    }, []);
 
     return (
         <div className="min-h-screen bg-gray-100 p-6">
