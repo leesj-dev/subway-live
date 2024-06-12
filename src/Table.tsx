@@ -15,27 +15,27 @@ interface ArrivalTableProps {
     currentLine: string;
 }
 
-const ArrivalTable: React.FC<ArrivalTableProps> = ({ upInfo, downInfo, formatTime, destinations, currentLine }) => {
+const Table: React.FC<ArrivalTableProps> = ({ upInfo, downInfo, formatTime, destinations, currentLine }) => {
     return (
         <div className="mt-14">
-            <div className="grid grid-cols-2 gap-5">
+            <div className="grid grid-cols-2 gap-8 sm:grid-cols-1">
                 <div>
-                    <h2 className="text-lg font-bold mb-2">{destinations[currentLine][0]}</h2>
-                    <table className="min-w-full divide-y divide-gray-200 table-fixed">
-                        <thead className="bg-gray-50">
+                    <h2 className="text-lg font-bold mb-2 text-slate-900 dark:text-slate-100">{destinations[currentLine][0]}</h2>
+                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 table-fixed">
+                        <thead className="bg-gray-50 dark:bg-gray-800">
                             <tr className="h-10">
-                                <th scope="col" className="w-10 h-10 px-3 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                <th scope="col" className="w-10 h-10 px-3 py-3 text-center text-xs font-medium text-gray-500 tracking-wider dark:text-gray-300">
                                      열차번호
                                 </th>
-                                <th scope="col" className="w-24 h-10 px-3 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                <th scope="col" className="w-24 h-10 px-3 py-3 text-center text-xs font-medium text-gray-500 tracking-wider dark:text-gray-300">
                                     행선지
                                 </th>
-                                <th scope="col" className="w-16 h-10 px-3 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                <th scope="col" className="w-16 h-10 px-3 py-3 text-center text-xs font-medium text-gray-500 tracking-wider dark:text-gray-300">
                                     남은 시간
                                 </th>
                             </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
+                        <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700 text-slate-900 dark:text-slate-100">
                             {upInfo.times ?
                                 upInfo.times.map((upTrain, index) => (
                                     <tr key={`up-${index}`}>
@@ -56,22 +56,22 @@ const ArrivalTable: React.FC<ArrivalTableProps> = ({ upInfo, downInfo, formatTim
                     </table>
                 </div>
                 <div>
-                    <h2 className="text-lg font-bold mb-2">{destinations[currentLine][1]}</h2>
-                    <table className="min-w-full divide-y divide-gray-200 table-fixed">
-                        <thead className="bg-gray-50">
+                    <h2 className="text-lg font-bold mb-2 text-slate-900 dark:text-slate-100">{destinations[currentLine][1]}</h2>
+                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 table-fixed">
+                        <thead className="bg-gray-50 dark:bg-gray-800">
                             <tr>
-                                <th scope="col" className="w-20 h-10 px-3 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                <th scope="col" className="w-10 h-10 px-3 py-3 text-center text-xs font-medium text-gray-500 tracking-wider dark:text-gray-300">
                                     열차번호
                                 </th>
-                                <th scope="col" className="w-40 h-10 px-3 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                <th scope="col" className="w-24 h-10 px-3 py-3 text-center text-xs font-medium text-gray-500 tracking-wider dark:text-gray-300">
                                     행선지
                                 </th>
-                                <th scope="col" className="w-24 h-10 px-3 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                <th scope="col" className="w-16 h-10 px-3 py-3 text-center text-xs font-medium text-gray-500 tracking-wider dark:text-gray-300">
                                     남은 시간
                                 </th>
                             </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
+                        <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700 text-slate-900 dark:text-slate-100">
                             {downInfo.times ?
                                 downInfo.times.map((downTrain, index) => (
                                     <tr key={`down-${index}`}>
@@ -96,4 +96,4 @@ const ArrivalTable: React.FC<ArrivalTableProps> = ({ upInfo, downInfo, formatTim
     );
 };
 
-export default ArrivalTable;
+export default Table;
