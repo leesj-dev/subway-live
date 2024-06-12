@@ -47,7 +47,7 @@ const SubwayInfo: React.FC = () => {
         const stationID = stations[selectedLine].find((station) => station.name === selectedStation)?.id;
         if (stationID) {
             const response = await axios.get(
-                `https://subway-live-ef069a488429.herokuapp.com/https://app.map.kakao.com/subway/station/arrivals.json?base_time=realtime&id=${stationID}`
+                `/api?base_time=realtime&id=${stationID}`
             );
             setArrivalInfo(response.data);
         }
