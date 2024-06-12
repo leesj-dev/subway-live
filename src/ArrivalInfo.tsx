@@ -47,7 +47,7 @@ const SubwayInfo: React.FC = () => {
         const stationID = stations[selectedLine].find((station) => station.name === selectedStation)?.id;
         if (stationID) {
             const response = await axios.get(
-                `/api?base_time=realtime&id=${stationID}`
+                `https://subway-live-ef069a488429.herokuapp.com/https://app.map.kakao.com/subway/station/arrivals.json?base_time=realtime&id=${stationID}`
             );
             setArrivalInfo(response.data);
         }
@@ -99,7 +99,7 @@ const SubwayInfo: React.FC = () => {
                               }
                             : prevArrivalInfo!.down_info,
                 }));
-            }, 1000);   
+            }, 1000);
         }
         return () => clearInterval(intervalId);
     }, [arrivalInfo]);
