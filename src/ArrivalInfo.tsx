@@ -115,7 +115,7 @@ const SubwayInfo: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
-            <div className="max-w-xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+            <div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
                 <h1 className="text-2xl text-gray-900 dark:text-gray-100 font-bold mb-8 text-center">부산 도시철도 실시간 도착정보</h1>
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-1 mb-4">
                     <LineSelector selectedLine={selectedLine} handleLineChange={handleLineChange} stations={stations} />

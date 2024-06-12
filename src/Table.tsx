@@ -18,7 +18,7 @@ interface ArrivalTableProps {
 const Table: React.FC<ArrivalTableProps> = ({ upInfo, downInfo, formatTime, destinations, currentLine }) => {
     return (
         <div className="mt-14">
-            <div className="grid grid-rows-2 gap-8 md:grid-rows-1 md:grid-cols-2 md:gap-5">
+            <div className="grid grid-rows-2 gap-8 md:grid-rows-1 md:grid-cols-2 md:gap-6">
                 <div>
                     <h2 className="text-lg font-bold mb-2 text-slate-900 dark:text-slate-100">{destinations[currentLine][0]}</h2>
                     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 table-fixed">
