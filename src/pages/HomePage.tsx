@@ -5,7 +5,7 @@ import remarkGfm from "remark-gfm";
 const HomePage: React.FC = () => {
     const [markdown, setMarkdown] = useState<string>("");
     useEffect(() => {
-        fetch("./guide.md")
+        fetch("/subway-live/guide.md")
             .then((response) => response.text())
             .then((text) => setMarkdown(text));
     }, []);
