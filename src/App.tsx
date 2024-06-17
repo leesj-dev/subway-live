@@ -58,7 +58,7 @@ const App: React.FC = () => {
                         ))}
                     </ul>
                 </div>
-                <div id="main" className="mt-20 grow p-1 text-center">
+                <div id="main" className="mt-[5vh] grow p-1 text-center">
                     <Routes>
                         <Route path="/" element={<HomePage />} />
                         <Route path="/arrival" element={<ArrivalInfoPage />} />
