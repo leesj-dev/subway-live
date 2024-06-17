@@ -47,28 +47,8 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-#root {
-    width: 100%;
-}
-
-a {
-    font-weight: 500;
-    color: #646cff;
-    text-decoration: inherit;
-}
-a:hover {
-    color: #535bf2;
-}
-
-body {
-    margin: 0;
-    display: flex;
-    place-items: center;
-    min-height: h-screen;
-}
-
 @supports (-webkit-touch-callout: none) {
-    .h-screen {
+    .min-h-screen {
         height: -webkit-fill-available;
     }
 }

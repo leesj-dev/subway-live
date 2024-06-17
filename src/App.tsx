@@ -9,8 +9,6 @@ import ArrivalInfoPage from "./pages/ArrivalInfoPage";
 import StationTablePage from "./pages/StationTablePage";
 // import TrainTablePage from "./pages/TrainTablePage";
 
-import "./index.css";
-
 const App: React.FC = () => {
     const [showFullMenu, setShowFullMenu] = useState<boolean>(window.innerWidth > 768);
     const [selectedMenu, setSelectedMenu] = useState<string>(window.location.pathname);
@@ -34,7 +32,7 @@ const App: React.FC = () => {
 
     return (
         <Router basename="/subway-live">
-            <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900 dark:text-white">
+            <div className="flex flex-col min-h-screen w-screen bg-gray-100 dark:bg-gray-900 dark:text-white">
                 <div id="topPanel" className="h-[52px] bg-gray-800 dark:bg-gray-800 px-4 py-2 flex items-center justify-between">
                     <Link to="/" className="text-white px-2 py-1 hover:text-white text-xl font-semibold tracking-wide" onClick={() => setSelectedMenu("")}>
                         부산 도시철도 정보
