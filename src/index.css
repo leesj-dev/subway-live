@@ -31,12 +31,6 @@
     font-style: bold;
 }
 
-/* iOS Safari에서 overflow 문제 해결 */
-@supports (-webkit-touch-callout: none) {
-    .h-screen {
-        height: -webkit-fill-available;
-    }
-}
 /* default Font를 Pretendard로 */
 :root {
     font-family: Pretendard, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -74,7 +68,7 @@ body {
     display: flex;
     place-items: center;
     min-width: 320px;
-    min-height: h-screen;
+    min-height: h-calc[(100dvh)];
 }
 
 h1 {
