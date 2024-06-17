@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 폰트 로드 */
 @font-face {
     font-family: "Pretendard";
     src: url("/fonts/Pretendard-Regular.subset.woff2") format("woff2");
@@ -30,12 +31,14 @@
     font-style: bold;
 }
 
+/* iOS Safari에서 overflow 문제 해결 */
 @supports (-webkit-touch-callout: none) {
     .h-screen {
         height: -webkit-fill-available;
     }
 }
 
+/* default Font를 Pretendard로 */
 :root {
     font-family: Pretendard, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
