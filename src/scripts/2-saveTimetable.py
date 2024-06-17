@@ -1,6 +1,10 @@
 import requests
 import json
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+API_LINK = os.getenv("API_LINK")
 
 stations_file_path = './src/data/stations.json'
 arrival_file_path = './src/data/arrival.json'
@@ -15,7 +19,7 @@ def save_json(file_path, data):
         json.dump(data, f, ensure_ascii=False)
 
 def fetch_timetable(station_id):
-    response = requests.get(f"https://app.map.kakao.com/subway/station/timetable.json?id={station_id}")
+    response = requests.get(f"{API_LINK}/subway/station/timetable.json?id={station_id}")
     return response.json()
 
 def transform_data(data, directions):
@@ -44,7 +48,7 @@ arrival = load_json(arrival_file_path)
 
 for line in stations:
     for station in stations[line].keys():
-        response = requests.get(f"https://app.map.kakao.com/subway/station/timetable.json?id={station}")
+        response = requests.get(f"{API_LINK}/subway/station/timetable.json?id={station}")
         data = response.json()
         directions = {direction: data["weekday"]["directions"][direction][0] for direction in ["up", "down"]}
 

@@ -43,9 +43,7 @@ const ArrivalInfoPage: React.FC = () => {
         const stationID = stations[selectedLine]?.find((s) => s.name === station)?.id;
         if (stationID) {
             try {
-                const response = await axios.get(
-                    `https://subway-live-ef069a488429.herokuapp.com/https://app.map.kakao.com/subway/station/arrivals.json?base_time=realtime&id=${stationID}`
-                );
+                const response = await axios.get(`http://api.leesj.me/subway/station/arrivals.json?base_time=realtime&id=${stationID}`);
                 setArrivalInfo(response.data);
             } catch (error) {
                 console.error("Failed to fetch arrival info:", error);
