@@ -30,6 +30,12 @@
     font-style: bold;
 }
 
+@supports (-webkit-touch-callout: none) {
+    .h-screen {
+        height: -webkit-fill-available;
+    }
+}
+
 :root {
     font-family: Pretendard, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
