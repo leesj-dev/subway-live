@@ -3,9 +3,9 @@ import axios from "axios";
 import stations from "../data/stations";
 import LineSelector from "../components/LineSelector";
 import StationSelector from "../components/StationSelector";
-import Button from "../components/Button";
 import ArrivalTable from "../components/ArrivalTable";
-import { ArrivalInfo } from "../types";
+import SyncLoader from "react-spinners/SyncLoader";
+import { ArrivalTimes, ArrivalInfo } from "../types";
 
 const destinations: { [key: string]: string[] } = {
     "1호선": ["다대포해수욕장", "노포"],
@@ -20,101 +20,91 @@ const ArrivalInfoPage: React.FC = () => {
     const [selectedLine, setSelectedLine] = useState<string>("");
     const [selectedStation, setSelectedStation] = useState<string>("");
     const [arrivalInfo, setArrivalInfo] = useState<ArrivalInfo | null>(null);
-    const [currentLine, setCurrentLine] = useState<string>("");
+    const [loading, setLoading] = useState<boolean>(false);
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+    // handle line selection change
     const handleLineChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedLine(e.target.value);
         setSelectedStation("");
+        setArrivalInfo(null);
     };
 
-    const handleStationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedStation(e.target.value);
+    // handle station selection change
+    const handleStationChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const station = e.target.value;
+        setSelectedStation(station);
+        setLoading(true);
+        await fetchArrivalInfo(station);
     };
 
-    const fetchArrivalInfo = async () => {
-        const stationID = stations[selectedLine].find((station) => station.name === selectedStation)?.id;
+    // fetch arrival information for a given station
+    const fetchArrivalInfo = async (station: string) => {
+        const stationID = stations[selectedLine]?.find((s) => s.name === station)?.id;
         if (stationID) {
-            const response = await axios.get(
-                `https://subway-live-ef069a488429.herokuapp.com/https://app.map.kakao.com/subway/station/arrivals.json?base_time=realtime&id=${stationID}`
-            );
-            setArrivalInfo(response.data);
+            try {
+                const response = await axios.get(
+                    `https://subway-live-ef069a488429.herokuapp.com/https://app.map.kakao.com/subway/station/arrivals.json?base_time=realtime&id=${stationID}`
+                );
+                setArrivalInfo(response.data);
+            } catch (error) {
+                console.error("Failed to fetch arrival info:", error);
+            } finally {
+                setLoading(false);
+            }
+            if (intervalRef.current) clearInterval(intervalRef.current);
+            intervalRef.current = setInterval(() => fetchArrivalInfo(station), 10000);
         }
-        setCurrentLine(selectedLine);
-
-        // clear any existing interval
-        if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-        }
-        intervalRef.current = setInterval(fetchArrivalInfo, 10000); // set new interval to fetch data every 10 seconds
     };
 
+    // cleanup interval on component unmount
+    useEffect(() => {
+        return () => {
+            if (intervalRef.current) clearInterval(intervalRef.current);
+        };
+    }, []);
+
+    // format time from seconds to minutes and seconds
     const formatTime = (seconds: number) => {
         const min = Math.floor(seconds / 60);
         const sec = seconds % 60;
         return min === 0 ? `${sec}초` : `${min}분 ${sec}초`;
     };
 
+    // update the remaining time every second
     useEffect(() => {
-        let intervalId: ReturnType<typeof setInterval>;
         if (arrivalInfo) {
-            intervalId = setInterval(() => {
-                setArrivalInfo((prevArrivalInfo) => {
-                    if (!prevArrivalInfo) return prevArrivalInfo;
-
+            const intervalId = setInterval(() => {
+                setArrivalInfo((prev) => {
+                    if (!prev) return prev;
+                    const updateTimes = (times: ArrivalTimes[] | null) => times?.map((train) => ({ ...train, remain_sec: Math.max(0, train.remain_sec - 1) })) ?? [];
                     return {
-                        ...prevArrivalInfo,
-                        up_info: prevArrivalInfo.up_info
-                            ? {
-                                  ...prevArrivalInfo.up_info,
-                                  times: prevArrivalInfo.up_info.times
-                                      ? prevArrivalInfo.up_info.times.map((train) => ({
-                                            ...train,
-                                            remain_sec: Math.max(0, train.remain_sec - 1),
-                                        }))
-                                      : [],
-                              }
-                            : prevArrivalInfo.up_info,
-                        down_info: prevArrivalInfo.down_info
-                            ? {
-                                  ...prevArrivalInfo.down_info,
-                                  times: prevArrivalInfo.down_info.times
-                                      ? prevArrivalInfo.down_info.times.map((train) => ({
-                                            ...train,
-                                            remain_sec: Math.max(0, train.remain_sec - 1),
-                                        }))
-                                      : [],
-                              }
-                            : prevArrivalInfo.down_info,
+                        ...prev,
+                        up_info: { ...prev.up_info, times: updateTimes(prev.up_info.times) },
+                        down_info: { ...prev.down_info, times: updateTimes(prev.down_info.times) },
                     };
                 });
             }, 1000);
+            return () => clearInterval(intervalId);
         }
-        return () => clearInterval(intervalId);
     }, [arrivalInfo]);
-
-    useEffect(() => {
-        // clear interval on unmount
-        return () => {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-            }
-        };
-    }, []);
 
     return (
         <>
             <h1 className="text-2xl text-gray-900 dark:text-gray-100 font-bold mb-8 break-keep">실시간 도착정보</h1>
-            <div className="flex flex-wrap justify-center gap-6 mb-4">
+            <div className="flex flex-wrap justify-center gap-6 mb-20">
                 <LineSelector selectedLine={selectedLine} handleLineChange={handleLineChange} stations={stations} />
                 <StationSelector selectedStation={selectedStation} handleStationChange={handleStationChange} stations={stations} selectedLine={selectedLine} />
             </div>
-            <Button onClick={fetchArrivalInfo} selectedStation={selectedStation} />
-            {arrivalInfo && (
-                <div className="flex flex-wrap justify-center gap-6 mt-14">
-                    <ArrivalTable direction={destinations[currentLine][0]} times={arrivalInfo.up_info.times} formatTime={formatTime} />
-                    <ArrivalTable direction={destinations[currentLine][1]} times={arrivalInfo.down_info.times} formatTime={formatTime} />
-                </div>
+            {loading ? (
+                <SyncLoader color={"#718096"} size={20} />
+            ) : (
+                arrivalInfo && (
+                    <div className="flex flex-wrap justify-center gap-6">
+                        <ArrivalTable direction={destinations[selectedLine][0]} times={arrivalInfo.up_info.times} formatTime={formatTime} />
+                        <ArrivalTable direction={destinations[selectedLine][1]} times={arrivalInfo.down_info.times} formatTime={formatTime} />
+                    </div>
+                )
             )}
         </>
     );

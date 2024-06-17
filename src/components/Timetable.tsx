@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { RenderedTrainTime, RenderedTimetableData } from "../types";
+import SyncLoader from "react-spinners/SyncLoader";
 
 const Timetable: React.FC<{ stationId: string }> = ({ stationId }) => {
     const [data, setData] = useState<RenderedTimetableData | null>(null);
@@ -28,27 +29,27 @@ const Timetable: React.FC<{ stationId: string }> = ({ stationId }) => {
 
     const filteredTrainTimes = data?.[day].filter((train) => train.direction === direction) || [];
 
-    if (!data || !stationId) return <div className="text-center pt-8">Loading...</div>;
+    if (!data || !stationId) return <SyncLoader color={"#718096"} size={20} />;
 
     const renderTable = (trainTimes: RenderedTrainTime[]) => (
-        <table className="mx-auto divide-y divide-gray-200 dark:divide-gray-700 mt-4">
+        <table className="mx-auto divide-y divide-gray-200 dark:divide-gray-700">
             <thead className="bg-gray-50 dark:bg-gray-800">
                 <tr>
-                    <th className="px-4 py-2 text-medium text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">열차번호</th>
-                    <th className="px-4 py-2 text-medium text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">출발지 &gt; 행선지</th>
-                    <th className="px-4 py-2 text-medium text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">도착시각</th>
-                    <th className="px-4 py-2 text-medium text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">출발시각</th>
+                    <th className="px-3 sm:px-4 py-2 text-medium text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">열차번호</th>
+                    <th className="px-3 sm:px-4 py-2 text-medium text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">출발지 &gt; 행선지</th>
+                    <th className="px-3 sm:px-4 py-2 text-medium text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">도착시각</th>
+                    <th className="px-3 sm:px-4 py-2 text-medium text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">출발시각</th>
                 </tr>
             </thead>
             <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700 text-gray-900 dark:text-gray-100">
                 {trainTimes.map((train, index) => (
                     <tr key={index}>
-                        <td className="px-4 py-2 text-base whitespace-nowrap tabular-nums">{train.trainNumber}</td>
-                        <td className="px-4 py-2 text-sm whitespace-nowrap">
+                        <td className="px-3 sm:px-4 py-2 text-sm sm:text-base whitespace-nowrap tabular-nums">{train.trainNumber}</td>
+                        <td className="px-3 sm:px-4 py-2 text-xs sm:text-sm whitespace-nowrap">
                             {train.startStation} &gt; {train.endStation}
                         </td>
-                        <td className="px-4 py-2 text-base whitespace-nowrap tabular-nums">{train.arrivalTime}</td>
-                        <td className="px-4 py-2 text-base whitespace-nowrap tabular-nums">{train.departureTime}</td>
+                        <td className="px-3 sm:px-4 py-2 text-sm sm:text-base whitespace-nowrap tabular-nums">{train.arrivalTime}</td>
+                        <td className="px-3 sm:px-4 py-2 text-sm sm:text-base whitespace-nowrap tabular-nums">{train.departureTime}</td>
                     </tr>
                 ))}
             </tbody>
