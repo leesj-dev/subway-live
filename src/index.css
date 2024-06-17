@@ -64,6 +64,11 @@ body {
     margin: 0;
     display: flex;
     place-items: center;
-    min-height: h-[calc(100dvh)]; /* fallback */
     min-height: h-screen;
+}
+
+@supports (-webkit-touch-callout: none) {
+    .h-screen {
+        height: -webkit-fill-available;
+    }
 }
