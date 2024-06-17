@@ -9,8 +9,6 @@ import ArrivalInfoPage from "./pages/ArrivalInfoPage";
 import StationTablePage from "./pages/StationTablePage";
 // import TrainTablePage from "./pages/TrainTablePage";
 
-import "./index.css";
-
 const App: React.FC = () => {
     const [showFullMenu, setShowFullMenu] = useState<boolean>(window.innerWidth > 768);
     const [selectedMenu, setSelectedMenu] = useState<string>(window.location.pathname);

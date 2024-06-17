@@ -46,9 +46,3 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
-
-@supports (-webkit-touch-callout: none) {
-    .min-h-screen {
-        height: -webkit-fill-available;
-    }
-}
