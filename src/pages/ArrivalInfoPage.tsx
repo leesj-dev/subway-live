@@ -90,7 +90,7 @@ const ArrivalInfoPage: React.FC = () => {
     }, [arrivalInfo]);
 
     return (
-        <>
+        <div className="p-6">
             <h1 className="text-2xl text-gray-900 dark:text-gray-100 font-bold mb-8 break-keep">실시간 도착정보</h1>
             <div className="flex flex-wrap justify-center gap-6 mb-20">
                 <LineSelector selectedLine={selectedLine} handleLineChange={handleLineChange} stations={stations} />
@@ -106,7 +106,7 @@ const ArrivalInfoPage: React.FC = () => {
                     </div>
                 )
             )}
-        </>
+        </div>
     );
 };
 

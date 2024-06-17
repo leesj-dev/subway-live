@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { TbLiveView } from "react-icons/tb";
 import { TbCalendarClock } from "react-icons/tb";
 import { MdTrain } from "react-icons/md";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { HashRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 import HomePage from "./pages/HomePage";
 import ArrivalInfoPage from "./pages/ArrivalInfoPage";
