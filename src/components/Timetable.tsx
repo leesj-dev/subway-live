@@ -29,7 +29,12 @@ const Timetable: React.FC<{ stationId: string }> = ({ stationId }) => {
 
     const filteredTrainTimes = data?.[day].filter((train) => train.direction === direction) || [];
 
-    if (!data || !stationId) return <SyncLoader color={"#718096"} size={20} />;
+    if (!data || !stationId)
+        return (
+            <div className="mt-[10vh]">
+                <SyncLoader color={"#718096"} size={20} />
+            </div>
+        );
 
     const renderTable = (trainTimes: RenderedTrainTime[]) => (
         <table className="mx-auto divide-y divide-gray-200 dark:divide-gray-700">
