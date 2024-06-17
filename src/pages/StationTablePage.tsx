@@ -27,14 +27,14 @@ const StationTablePage: React.FC = () => {
     }, [selectedLine, selectedStation]);
 
     return (
-        <>
+        <div className="py-6">
             <h1 className="text-2xl text-gray-900 dark:text-gray-100 font-bold mb-8 break-keep">역 시간표</h1>
             <div className="flex flex-wrap justify-center gap-6 mb-8">
                 <LineSelector selectedLine={selectedLine} handleLineChange={handleLineChange} stations={stations} />
                 <StationSelector selectedStation={selectedStation} handleStationChange={handleStationChange} stations={stations} selectedLine={selectedLine} />
             </div>
             {stationId && <Timetable stationId={stationId} />}
-        </>
+        </div>
     );
 };
 
