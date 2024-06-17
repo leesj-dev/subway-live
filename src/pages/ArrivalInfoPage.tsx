@@ -92,12 +92,14 @@ const ArrivalInfoPage: React.FC = () => {
     return (
         <div className="p-6">
             <h1 className="text-2xl text-gray-900 dark:text-gray-100 font-bold mb-8 break-keep">실시간 도착정보</h1>
-            <div className="flex flex-wrap justify-center gap-6 mb-20">
+            <div className="flex flex-wrap justify-center gap-6 mb-[4vh]">
                 <LineSelector selectedLine={selectedLine} handleLineChange={handleLineChange} stations={stations} />
                 <StationSelector selectedStation={selectedStation} handleStationChange={handleStationChange} stations={stations} selectedLine={selectedLine} />
             </div>
             {loading ? (
-                <SyncLoader color={"#718096"} size={20} />
+                <div className="mt-[10vh]">
+                    <SyncLoader color={"#718096"} size={20} />
+                </div>
             ) : (
                 arrivalInfo && (
                     <div className="flex flex-wrap justify-center gap-6">
