@@ -8,9 +8,9 @@ const Timetable: React.FC<{ stationId: string }> = ({ stationId }) => {
     const [direction, setDirection] = useState<string>("");
     const [day, setDay] = useState<"weekday" | "saturday" | "holiday">(() => {
         const today = new Date().getDay();
-        if (today === 0 || today === 6) {
+        if (today === 0) {
             return "holiday";
-        } else if (today === 5) {
+        } else if (today === 6) {
             return "saturday";
         } else {
             return "weekday";
@@ -18,13 +18,13 @@ const Timetable: React.FC<{ stationId: string }> = ({ stationId }) => {
     });
 
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchTimetable = async () => {
             if (!stationId) return;
             const response = await axios.get<RenderedTimetableData>(`./timetable/${stationId}.json`);
             setData(response.data);
             setDirection(response.data.weekday.length > 0 ? response.data.weekday[0].direction : "");
         };
-        fetchData();
+        fetchTimetable();
     }, [stationId]);
 
     const filteredTrainTimes = data?.[day].filter((train) => train.direction === direction) || [];

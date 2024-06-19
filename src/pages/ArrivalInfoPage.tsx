@@ -1,26 +1,20 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
+import SyncLoader from "react-spinners/SyncLoader";
 import stations from "../data/stations";
+import destinations from "../data/destinations";
 import LineSelector from "../components/LineSelector";
 import StationSelector from "../components/StationSelector";
 import ArrivalTable from "../components/ArrivalTable";
-import SyncLoader from "react-spinners/SyncLoader";
-import { ArrivalTimes, ArrivalInfo } from "../types";
-
-const destinations: { [key: string]: string[] } = {
-    "1호선": ["다대포해수욕장", "노포"],
-    "2호선": ["장산", "양산"],
-    "3호선": ["수영", "대저"],
-    "4호선": ["미남", "안평"],
-    부산김해경전철: ["사상", "가야대"],
-    동해선: ["부전", "태화강"],
-};
+import { getTimeInSeconds, formatTime, getCurrentDaySchedule } from "../utils/timeUtils";
+import { ArrivalTimes, ArrivalInfo, RenderedTimetableData } from "../types";
 
 const ArrivalInfoPage: React.FC = () => {
     const [selectedLine, setSelectedLine] = useState<string>("");
     const [selectedStation, setSelectedStation] = useState<string>("");
     const [arrivalInfo, setArrivalInfo] = useState<ArrivalInfo | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
+    const [timetable, setTimetable] = useState<RenderedTimetableData | null>(null);
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
     // handle line selection change
@@ -28,31 +22,33 @@ const ArrivalInfoPage: React.FC = () => {
         setSelectedLine(e.target.value);
         setSelectedStation("");
         setArrivalInfo(null);
+        setTimetable(null);
     };
 
     // handle station selection change
     const handleStationChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const station = e.target.value;
+        const stationID = stations[selectedLine]?.find((s) => s.name === station)?.id;
         setSelectedStation(station);
         setLoading(true);
-        await fetchArrivalInfo(station);
+
+        if (stationID) {
+            const timetableResponse = await axios.get(`./timetable/${stationID}.json`);
+            setTimetable(timetableResponse.data);
+            await fetchArrivalInfo(stationID);
+
+            if (intervalRef.current) clearInterval(intervalRef.current);
+            intervalRef.current = setInterval(() => fetchArrivalInfo(stationID), 10000);
+        }
     };
 
     // fetch arrival information for a given station
-    const fetchArrivalInfo = async (station: string) => {
-        const stationID = stations[selectedLine]?.find((s) => s.name === station)?.id;
-        if (stationID) {
-            try {
-                const response = await axios.get(`https://api.leesj.me/subway/station/arrivals.json?base_time=realtime&id=${stationID}`);
-                setArrivalInfo(response.data);
-            } catch (error) {
-                console.error("Failed to fetch arrival info:", error);
-            } finally {
-                setLoading(false);
-            }
-            if (intervalRef.current) clearInterval(intervalRef.current);
-            intervalRef.current = setInterval(() => fetchArrivalInfo(station), 10000);
-        }
+    const fetchArrivalInfo = async (stationID: string) => {
+        const response = await axios.get(`https://api.leesj.me/subway/station/arrivals.json?base_time=realtime&id=${stationID}`);
+        let arrivalData = response.data;
+        if (timetable) arrivalData = fillTimetableData(arrivalData, timetable, selectedLine);
+        setArrivalInfo(arrivalData);
+        setLoading(false);
     };
 
     // cleanup interval on component unmount
@@ -62,11 +58,33 @@ const ArrivalInfoPage: React.FC = () => {
         };
     }, []);
 
-    // format time from seconds to minutes and seconds
-    const formatTime = (seconds: number) => {
-        const min = Math.floor(seconds / 60);
-        const sec = seconds % 60;
-        return min === 0 ? `${sec}초` : `${min}분 ${sec}초`;
+    // fill the missing timetable data
+    const fillTimetableData = (arrivalData: ArrivalInfo, timetable: RenderedTimetableData, selectedLine: string) => {
+        const currentTime = getTimeInSeconds(new Date().toTimeString().split(" ")[0]);
+        const schedule = getCurrentDaySchedule(timetable);
+
+        const getUpcomingTrains = (direction: string) =>
+            schedule
+                .filter((train) => getTimeInSeconds(train.arrivalTime) > currentTime && train.direction === direction)
+                .slice(0, 2) // next two trains
+                .map((train) => ({
+                    train_no: train.trainNumber,
+                    end_station_name: train.endStation,
+                    remain_sec: getTimeInSeconds(train.arrivalTime) - currentTime,
+                    from_schedule: true,
+                }));
+
+        for (const key of ["up_info", "down_info"] as const) {
+            const direction = destinations[selectedLine][key];
+            let times = arrivalData[key].times ?? [];
+            times = times.map((train) => ({ ...train, from_schedule: false }));
+            if (times.length < 2) {
+                times = [...times, ...getUpcomingTrains(direction).slice(times.length)];
+            }
+            arrivalData[key].times = times;
+        }
+
+        return arrivalData;
     };
 
     // update the remaining time every second
@@ -101,8 +119,8 @@ const ArrivalInfoPage: React.FC = () => {
             ) : (
                 arrivalInfo && (
                     <div className="flex flex-wrap justify-center gap-6">
-                        <ArrivalTable direction={destinations[selectedLine][0]} times={arrivalInfo.up_info.times} formatTime={formatTime} />
-                        <ArrivalTable direction={destinations[selectedLine][1]} times={arrivalInfo.down_info.times} formatTime={formatTime} />
+                        <ArrivalTable direction={destinations[selectedLine]["up_info"]} times={arrivalInfo.up_info.times} formatTime={formatTime} />
+                        <ArrivalTable direction={destinations[selectedLine]["down_info"]} times={arrivalInfo.down_info.times} formatTime={formatTime} />
                     </div>
                 )
             )}

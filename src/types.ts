@@ -11,7 +11,8 @@ export interface ArrivalTimes {
     train_no: string;
     end_station_name: string;
     remain_sec: number;
-    display_txt: string;
+    display_txt?: string; // optional
+    from_schedule?: boolean; // optional
 }
 
 export interface ArrivalInfo {
@@ -23,7 +24,9 @@ export interface ArrivalInfo {
 export interface ArrivalTableProps {
     direction: string;
     times: ArrivalTimes[] | null;
-    formatTime: (seconds: number) => string;
+    formatTime: (seconds: number, fromSchedule: boolean) => string;
+    selectedLine?: string; // optional
+    stationID?: string; // optional
 }
 
 export interface LineSelectorProps {
