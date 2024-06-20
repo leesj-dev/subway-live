@@ -9,17 +9,17 @@ export default {
                 DEFAULT: {
                     css: {
                         "code::before": {
-                            content: "&nbsp;&nbsp;",
+                            content: "",
                         },
                         "code::after": {
-                            content: "&nbsp;&nbsp;",
+                            content: "",
                         },
                         code: {
-                            background: "rgba(185, 185, 185, 0.2)",
+                            background: "rgba(180, 180, 180, 0.2)",
                             wordWrap: "break-word",
                             boxDecorationBreak: "clone",
-                            padding: ".2rem .4rem",
-                            borderRadius: ".3rem",
+                            padding: ".1rem .2rem",
+                            borderRadius: ".2rem",
                         },
                     },
                 },
