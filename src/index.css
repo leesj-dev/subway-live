@@ -46,10 +46,3 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
-
-/* iOS Safari에서 svh로 사용 */
-@supports (-webkit-touch-callout: none) {
-    .min-h-screen {
-        height: 100svh;
-    }
-}

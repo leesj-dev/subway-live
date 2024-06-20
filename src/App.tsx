@@ -32,7 +32,7 @@ const App: React.FC = () => {
 
     return (
         <Router basename="/subway-live">
-            <div className="flex flex-col min-h-screen w-screen bg-gray-100 dark:bg-gray-900 dark:text-white">
+            <div className="flex flex-col min-h-screen w-screen dark:text-white">
                 <div id="topPanel" className="h-[52px] bg-gray-800 dark:bg-gray-800 px-4 py-2 flex items-center justify-between">
                     <Link to="/" className="text-white px-2 py-1 hover:text-white text-xl font-semibold tracking-wide" onClick={() => setSelectedMenu("")}>
                         부산 도시철도 정보
@@ -56,7 +56,7 @@ const App: React.FC = () => {
                         ))}
                     </ul>
                 </div>
-                <div id="main" className="mt-[5vh] grow p-1 text-center">
+                <div id="main" className="mt-[5vh] grow p-1 text-center bg-gray-100 dark:bg-gray-900">
                     <Routes>
                         <Route path="/" element={<HomePage />} />
                         <Route path="/arrival" element={<ArrivalInfoPage />} />
