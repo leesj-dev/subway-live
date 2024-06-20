@@ -14,7 +14,6 @@ const ArrivalInfoPage: React.FC = () => {
     const [selectedStation, setSelectedStation] = useState<string>("");
     const [arrivalInfo, setArrivalInfo] = useState<ArrivalInfo | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    const [timetable, setTimetable] = useState<RenderedTimetableData | null>(null);
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
     // handle line selection change
@@ -22,33 +21,20 @@ const ArrivalInfoPage: React.FC = () => {
         setSelectedLine(e.target.value);
         setSelectedStation("");
         setArrivalInfo(null);
-        setTimetable(null);
     };
 
     // handle station selection change
     const handleStationChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const station = e.target.value;
         const stationID = stations[selectedLine]?.find((s) => s.name === station)?.id;
+        if (!stationID) return;
         setSelectedStation(station);
         setLoading(true);
+        await fetchArrivalInfo(stationID);
 
-        if (stationID) {
-            const timetableResponse = await axios.get(`./timetable/${stationID}.json`);
-            setTimetable(timetableResponse.data);
-            await fetchArrivalInfo(stationID);
-
-            if (intervalRef.current) clearInterval(intervalRef.current);
-            intervalRef.current = setInterval(() => fetchArrivalInfo(stationID), 10000);
-        }
-    };
-
-    // fetch arrival information for a given station
-    const fetchArrivalInfo = async (stationID: string) => {
-        const response = await axios.get(`https://api.leesj.me/subway/station/arrivals.json?base_time=realtime&id=${stationID}`);
-        let arrivalData = response.data;
-        if (timetable) arrivalData = fillTimetableData(arrivalData, timetable, selectedLine);
-        setArrivalInfo(arrivalData);
-        setLoading(false);
+        // clear the interval and set a new one to fetch arrival info every 10 seconds
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        intervalRef.current = setInterval(() => fetchArrivalInfo(stationID), 10000);
     };
 
     // cleanup interval on component unmount
@@ -57,6 +43,20 @@ const ArrivalInfoPage: React.FC = () => {
             if (intervalRef.current) clearInterval(intervalRef.current);
         };
     }, []);
+
+    // fetch arrival information for a given station
+    const fetchArrivalInfo = async (stationID: string) => {
+        // get timetable data first
+        const timetableResponse = await axios.get(`./timetable/${stationID}.json`);
+        const timetableData = timetableResponse.data;
+
+        // then get arrival data
+        const response = await axios.get(`https://api.leesj.me/subway/station/arrivals.json?base_time=realtime&id=${stationID}`);
+        let arrivalData = response.data;
+        if (timetableData) arrivalData = fillTimetableData(arrivalData, timetableData, selectedLine);
+        setArrivalInfo(arrivalData);
+        setLoading(false);
+    };
 
     // fill the missing timetable data
     const fillTimetableData = (arrivalData: ArrivalInfo, timetable: RenderedTimetableData, selectedLine: string) => {
