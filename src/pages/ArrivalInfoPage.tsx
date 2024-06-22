@@ -86,8 +86,8 @@ const ArrivalInfoPage: React.FC = () => {
                     const arrivalTimeInSeconds = currentTime + train.remain_sec;
                     const matchedTrain = schedule.find((scheduleTrain) => {
                         // 출발역인 경우, 출발 시간을 사용. 나머지는 도착 시간을 사용
-                        const arrivalTime = scheduleTrain.arrivalTime ? scheduleTrain.arrivalTime : scheduleTrain.departureTime;
-                        const scheduleArrivalTimeInSeconds = getTimeInSeconds(arrivalTime);
+                        const scheduleArrivalTime = scheduleTrain.arrivalTime ? scheduleTrain.arrivalTime : scheduleTrain.departureTime;
+                        const scheduleArrivalTimeInSeconds = getTimeInSeconds(scheduleArrivalTime);
                         return (
                             // 시간표보다 80초 일찍 ~ 시간표보다 120초 늦게 도착하는 열차를 찾음 (곧 도착 열차의 경우, 최대 20초 일찍 ~ 60초 늦게 도착하는 열차)
                             scheduleTrain.direction === destinations[selectedLine][key] &&
