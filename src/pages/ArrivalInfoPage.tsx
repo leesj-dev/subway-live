@@ -6,7 +6,7 @@ import destinations from "../data/destinations";
 import LineSelector from "../components/LineSelector";
 import StationSelector from "../components/StationSelector";
 import ArrivalTable from "../components/ArrivalTable";
-import { getTimeInSeconds, formatTime, getCurrentDaySchedule } from "../utils/timeUtils";
+import { getTimeInSeconds, formatTime, today } from "../utils/timeUtils";
 import { ArrivalTimes, ArrivalInfo, RenderedTimetableData } from "../types";
 
 const ArrivalInfoPage: React.FC = () => {
@@ -63,7 +63,7 @@ const ArrivalInfoPage: React.FC = () => {
     // timetable 전처리
     const fillTimetableData = (arrivalData: ArrivalInfo, timetable: RenderedTimetableData, selectedLine: string) => {
         const currentTime = getTimeInSeconds(new Date().toTimeString().split(" ")[0]);
-        const schedule = getCurrentDaySchedule(timetable);
+        const schedule = timetable[today()];
 
         // 시간표 정보 중 현재 시간 이후의 열차 정보를 가져옴
         const getUpcomingTrains = (direction: string) =>
@@ -85,7 +85,9 @@ const ArrivalInfoPage: React.FC = () => {
                 if (!train.train_no) {
                     const arrivalTimeInSeconds = currentTime + train.remain_sec;
                     const matchedTrain = schedule.find((scheduleTrain) => {
-                        const scheduleArrivalTimeInSeconds = getTimeInSeconds(scheduleTrain.arrivalTime);
+                        // 출발역인 경우, 출발 시간을 사용. 나머지는 도착 시간을 사용
+                        const arrivalTime = scheduleTrain.arrivalTime ? scheduleTrain.arrivalTime : scheduleTrain.departureTime;
+                        const scheduleArrivalTimeInSeconds = getTimeInSeconds(arrivalTime);
                         return (
                             // 시간표보다 80초 일찍 ~ 시간표보다 120초 늦게 도착하는 열차를 찾음 (곧 도착 열차의 경우, 최대 20초 일찍 ~ 60초 늦게 도착하는 열차)
                             scheduleTrain.direction === destinations[selectedLine][key] &&
