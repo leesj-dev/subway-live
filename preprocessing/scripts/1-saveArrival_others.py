@@ -1,56 +1,17 @@
-from dotenv import load_dotenv
 from collections import defaultdict
-import os
 import csv
-import json
-import requests
+from utils import load_json, save_json, fetch_json, from_24_to_00, format_time, convert_time, nested_dict
+from paths import codes_path, stations_path, arrival_others_path
+from env_variables import API_LINK, SERVICE_KEY
 
-load_dotenv()
-SERVICE_KEY = os.getenv("SERVICE_KEY")
-API_LINK = os.getenv("API_LINK")
-
-csv_file_path = "./preprocessing/codes.csv"
-stations_file_path = "./preprocessing/stations.json"
-output_file_path = "./preprocessing/arrival_others.json"
-day_type_dict = {"weekday": "8", "saturday": "7", "holiday": "9"}
-
-def load_json(file_path):
-    with open(file_path, 'r', encoding='utf-8') as f:
-        return json.load(f)
-
-def save_json(file_path, data):
-    with open(file_path, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False)
-
-def fetch_json(link):
-    response = requests.get(link)
-    return response.json()
-
-def adjust_time(time_str):
-    return "00" + time_str[2:] if time_str.startswith("24") else time_str
-
-def format_time(time_str):
-    if not time_str: return
-    return ":".join(time_str[i:i+2] for i in range(0, len(time_str), 2))  # hhmmss to hh:mm:ss
-
-def convert_time(time_str):
-    if not time_str: return
-    hours = int(time_str[:2])
-    minutes = int(time_str[3:5])
-    seconds = int(time_str[6:8])
-    return hours * 3600 + minutes * 60 + seconds
-    
-
-# output 구조 생성: 노선명 > 역명 > 요일 종류 > 진행 방향 > 열차번호 > [도착시간, 출발시간]
-def nested_dict():
-    return defaultdict(nested_dict)
 
 output = defaultdict(nested_dict)  # recursive
-stations = load_json(stations_file_path)
+stations = load_json(stations_path)
+day_type_dict = {"weekday": "8", "saturday": "7", "holiday": "9"}
 print("역\t\t방향\t요일\t열차번호[도착시각, 출발시각]\t차이")
 
 # csv 로드
-with open(csv_file_path, 'r', encoding='utf8') as csv_file:
+with open(codes_path, 'r', encoding='utf8') as csv_file:
     csv_reader = csv.reader(csv_file)
     next(csv_reader)  # header row 스킵
 
@@ -73,8 +34,8 @@ with open(csv_file_path, 'r', encoding='utf8') as csv_file:
                 for direction in ["up", "down"]:
                     for train in hourly_train[f"{direction}_times"]:
                         direction_station = directions[direction]
-                        arrival_time = adjust_time(train.get("time_arrive", ""))
-                        departure_time = adjust_time(train.get("time_departure", ""))
+                        arrival_time = from_24_to_00(train.get("time_arrive", ""))
+                        departure_time = from_24_to_00(train.get("time_departure", ""))
                         times = [arrival_time, departure_time]
                         train_number = ""
 
@@ -104,9 +65,10 @@ with open(csv_file_path, 'r', encoding='utf8') as csv_file:
 
                         if not train_number:
                             print(f"열차번호 없음: {station_name.ljust(7)}\t{direction_station}\t{day_type}\t?\t{times}")
-
+                        
+                        # output 구조: 노선명 > 역명 > 요일 종류 > 진행 방향 > 열차번호 > [도착시간, 출발시간]
                         output[line_name][station_id][day_type][direction_station][train_number] = times
 
         print(f"{line_name} {station_name}역 처리 완료\n")
 
-save_json(output_file_path, output)
+save_json(arrival_others_path, output)

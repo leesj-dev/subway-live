@@ -1,26 +1,7 @@
-import requests
-import json
+from utils import load_json, save_json, fetch_json, from_24_to_00
+from paths import stations_path, arrival_path, timetable_path
+from env_variables import API_LINK
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
-API_LINK = os.getenv("API_LINK")
-
-stations_file_path = './preprocessing/stations.json'
-arrival_file_path = './preprocessing/arrival.json'
-timetable_file_path = './public/timetable'
-
-def load_json(file_path):
-    with open(file_path, 'r', encoding='utf-8') as f:
-        return json.load(f)
-
-def save_json(file_path, data):
-    with open(file_path, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False)
-
-def fetch_timetable(station_id):
-    response = requests.get(f"{API_LINK}/subway/station/timetable.json?id={station_id}")
-    return response.json()
 
 def transform_data(data, directions):
     return [
@@ -37,22 +18,18 @@ def transform_data(data, directions):
         for train in hourly_train[f"{direction}_times"]
     ]
 
-def from_24_to_00(time_str):
-    return "00" + time_str[2:] if time_str.startswith("24") else time_str
-
 def adjust_time(time_str, line):
     if not time_str: return ""
     if line in btc_lines: time_str = time_str[:5]
     return from_24_to_00(time_str)
 
-
-stations = load_json(stations_file_path)
-arrival = load_json(arrival_file_path)
+stations = load_json(stations_path)
+arrival = load_json(arrival_path)
 btc_lines = ["1호선", "2호선", "3호선", "4호선"]
 
 for line in stations:
     for station in stations[line].values():
-        data = fetch_timetable(station)
+        data = fetch_json(f"{API_LINK}/subway/station/timetable.json?id={station}")
         directions = {direction: data["weekday"]["directions"][direction][0] for direction in ["up", "down"]}
 
         rendered_table = {}
@@ -85,9 +62,9 @@ for line in stations:
 
             rendered_table[day] = transformed_data
 
-        save_path = os.path.join(timetable_file_path, f"{station}.json")
+        save_path = os.path.join(timetable_path, f"{station}.json")
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
         save_json(save_path, rendered_table)
         print(f"{line} {station} 저장 완료")
 
-save_json(arrival_file_path, arrival)
+save_json(arrival_path, arrival)

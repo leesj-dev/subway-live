@@ -1,0 +1,8 @@
+csv_path = './preprocessing/부산교통공사_운행정보.csv'
+codes_path = './preprocessing/codes.csv'
+stations_path = './preprocessing/stations.json'
+arrival_BTC_path = './preprocessing/arrival_BTC.json'
+arrival_others_path = './preprocessing/arrival_others.json'
+arrival_path = './preprocessing/arrival.json'
+timetable_path = './public/timetable'
+traintable_path = './public/traintable'

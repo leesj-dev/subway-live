@@ -1,24 +1,14 @@
 from collections import defaultdict
 import csv
-import json
+from utils import load_json, save_json, nested_dict
+from paths import csv_path, stations_path, arrival_BTC_path
 
-csv_file_path = './preprocessing/부산교통공사_운행정보.csv'
-stations_file_path = './preprocessing/stations.json'
-output_file_path = './preprocessing/arrival_BTC.json'
 
-# stations.json 로드
-with open(stations_file_path, 'r', encoding='utf8') as json_file:
-    json_data = json.load(json_file)
-
-# output 구조 생성: 노선명 > 역명 > 요일 종류 > 진행 방향 > 열차번호 > [도착시간, 출발시간]
-def nested_dict():
-    return defaultdict(nested_dict)
-
-output = defaultdict(nested_dict)  # recursive
-
+output = defaultdict(nested_dict)
+json_data = load_json(stations_path)
 
 # csv 로드
-with open(csv_file_path, 'r', encoding='utf8') as csv_file:
+with open(csv_path, 'r', encoding='utf8') as csv_file:
     csv_reader = csv.reader(csv_file)
     next(csv_reader)  # header row 스킵
 
@@ -60,8 +50,8 @@ with open(csv_file_path, 'r', encoding='utf8') as csv_file:
         
         ## 4. 최종 output 생성
         for station, times in time_dict.items():
+            # output 구조: 노선명 > 역명 > 요일 종류 > 진행 방향 > 열차번호 > [도착시간, 출발시간]
             output[line][station][day][direction][train_number] = times
 
 # JSON 파일로 저장
-with open(output_file_path, 'w', encoding='utf8') as f:
-    f.write(json.dumps(output, ensure_ascii=False))
+save_json(arrival_BTC_path, output)
