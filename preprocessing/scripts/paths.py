@@ -1,4 +1,4 @@
-csv_path = './preprocessing/부산교통공사_운행정보.csv'
+csv_path = './preprocessing/trains_BTC.csv'
 codes_path = './preprocessing/codes.csv'
 stations_path = './preprocessing/stations.json'
 arrival_BTC_path = './preprocessing/arrival_BTC.json'
