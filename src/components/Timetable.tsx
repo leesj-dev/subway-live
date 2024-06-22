@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { RenderedTrainTime, RenderedTimetableData } from "../types";
 import { today } from "../utils/timeUtils";
 import SyncLoader from "react-spinners/SyncLoader";
+import { RenderedTrainTime, RenderedTimetableData } from "../types";
 
 const Timetable: React.FC<{ stationId: string }> = ({ stationId }) => {
     const [data, setData] = useState<RenderedTimetableData | null>(null);

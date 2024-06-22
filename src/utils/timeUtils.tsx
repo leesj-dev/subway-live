@@ -11,15 +11,14 @@ export const formatTime = (seconds: number, fromSchedule: boolean) => {
 };
 
 export const today = () => {
+    const holidays = ["0101", "0209", "0210", "0211", "0212", "0301", "0410", "0505", "0506", "0515", "0606", "0815", "0916", "0917", "0918", "1003", "1009", "1225"].map(
+        (date) => "2024" + date
+    );
     const now = new Date();
-    let currentDay;
-    if (now.getHours() === 0) {
-        // 자정을 넘은 직후인 경우, 어제로 간주
-        const yesterday = new Date(now);
-        yesterday.setDate(now.getDate() - 1);
-        currentDay = yesterday.getDay();
-    } else {
-        currentDay = now.getDay();
-    }
+    const dateToCheck = new Date(now);
+    if (now.getHours() === 0) dateToCheck.setDate(now.getDate() - 1); // 자정을 넘은 직후면 전날로 처리
+    const todayDate = dateToCheck.toISOString().split("T")[0].replace(/-/g, ""); // 20240622
+    if (holidays.some((holiday) => holiday === todayDate)) return "holiday";
+    const currentDay = dateToCheck.getDay();
     return currentDay === 0 ? "holiday" : currentDay === 6 ? "saturday" : "weekday";
 };
