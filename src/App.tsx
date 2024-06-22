@@ -61,7 +61,7 @@ const App: React.FC = () => {
                         <Route path="/" element={<HomePage />} />
                         <Route path="/arrival" element={<ArrivalInfoPage />} />
                         <Route path="/station" element={<StationTablePage />} />
-                        <Route path="/train" element={<h1 className="text-2xl font-semibold tracking-wide">Under Development</h1>} />
+                        <Route path="/train" element={<h1 className="text-gray-900 dark:text-gray-100 text-2xl font-semibold tracking-wide">Under Development</h1>} />
                     </Routes>
                 </div>
             </div>

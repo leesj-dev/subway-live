@@ -29,26 +29,36 @@ export interface ArrivalTableProps {
     stationID?: string; // optional
 }
 
+export interface SelectorProps<ValueType> {
+    label: string;
+    value: ValueType;
+    options: { label: string; value: ValueType }[];
+    handleChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+    disabled?: boolean;
+}
+
 export interface LineSelectorProps {
     selectedLine: string;
     handleLineChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-    stations: {
-        [key: string]: Array<{ name: string; id: string }>;
-    };
+    stations: { [key: string]: Array<{ name: string; id: string }> };
 }
 
 export interface StationSelectorProps {
     selectedStation: string;
     handleStationChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-    stations: {
-        [key: string]: Array<{ name: string; id: string }>;
-    };
+    stations: { [key: string]: Array<{ name: string; id: string }> };
     selectedLine: string;
 }
 
-export interface ButtonProps {
-    onClick: () => void;
-    selectedStation: string;
+export interface DirectionSelectorProps {
+    direction: string;
+    setDirection: (value: string) => void;
+    data: { weekday: { direction: string }[] };
+}
+
+export interface DaySelectorProps {
+    day: "weekday" | "saturday" | "holiday";
+    setDay: (value: "weekday" | "saturday" | "holiday") => void;
 }
 
 // timetable
