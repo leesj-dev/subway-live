@@ -11,7 +11,7 @@ const LineSelector: React.FC<LineSelectorProps> = ({ selectedLine, handleLineCha
                 id="line"
                 value={selectedLine}
                 onChange={handleLineChange}
-                className="mt-1 block w-36 pl-3 py-2 text-center text-base border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                className="mt-1 block w-36 pl-3 py-2 text-center text-base border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             >
                 <option value="">노선 선택</option>
                 {Object.keys(stations).map((line, index) => (

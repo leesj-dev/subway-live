@@ -11,7 +11,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({ selectedStation, hand
                 id="station"
                 value={selectedStation}
                 onChange={handleStationChange}
-                className="mt-1 block w-36 pl-3 py-2 text-center border text-base border-gray-300 dark:border-gray-600s rounded-md dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-36 pl-3 py-2 text-center text-base border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 disabled={!selectedLine}
             >
                 <option value="">역 선택</option>
