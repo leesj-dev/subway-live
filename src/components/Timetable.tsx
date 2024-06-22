@@ -7,7 +7,17 @@ const Timetable: React.FC<{ stationId: string }> = ({ stationId }) => {
     const [data, setData] = useState<RenderedTimetableData | null>(null);
     const [direction, setDirection] = useState<string>("");
     const [day, setDay] = useState<"weekday" | "saturday" | "holiday">(() => {
-        const today = new Date().getDay();
+        const now = new Date();
+        let today;
+        if (now.getHours() === 0) {
+            // 자정을 넘은 직후인 경우, 어제로 간주
+            const yesterday = new Date(now);
+            yesterday.setDate(now.getDate() - 1);
+            today = yesterday.getDay();
+        } else {
+            today = now.getDay();
+        }
+
         if (today === 0) {
             return "holiday";
         } else if (today === 6) {
