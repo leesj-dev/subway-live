@@ -16,14 +16,14 @@ const ArrivalInfoPage: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-    // handle line selection change
+    // 노선명 변경 시
     const handleLineChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedLine(e.target.value);
         setSelectedStation("");
         setArrivalInfo(null);
     };
 
-    // handle station selection change
+    // 역명 변경 시
     const handleStationChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const station = e.target.value;
         const stationID = stations[selectedLine]?.find((s) => s.name === station)?.id;
@@ -31,43 +31,41 @@ const ArrivalInfoPage: React.FC = () => {
         setSelectedStation(station);
         setLoading(true);
 
-        // Fetch timetable data only once when the station changes
+        // 역명이 바뀔 때 시간표 정보를 가져옴
         const timetableResponse = await axios.get(`./timetable/${stationID}.json`);
         const timetableData = timetableResponse.data;
 
-        // Fetch arrival info
         await fetchArrivalInfo(stationID, timetableData);
 
-        // clear the interval and set a new one to fetch arrival info every 10 seconds
+        // interval clear 후 실시간 도착 정보를 10초마다 가져오기 위해 interval 설정
         if (intervalRef.current) clearInterval(intervalRef.current);
         intervalRef.current = setInterval(() => fetchArrivalInfo(stationID, timetableData), 10000);
     };
 
-    // cleanup interval on component unmount
+    // component unmount시 interval clear
     useEffect(() => {
         return () => {
             if (intervalRef.current) clearInterval(intervalRef.current);
         };
     }, []);
 
-    // fetch arrival information for a given station with timetable data
+    // 실시간 도착 정보 가져오기
     const fetchArrivalInfo = async (stationID: string, timetableData: RenderedTimetableData) => {
         // Fetch arrival data
         const response = await axios.get(`https://api.leesj.me/subway/station/arrivals.json?base_time=realtime&id=${stationID}`);
         let arrivalData = response.data;
-
-        // If timetable data is available, enrich the arrival data
         if (timetableData) arrivalData = fillTimetableData(arrivalData, timetableData, selectedLine);
 
         setArrivalInfo(arrivalData);
         setLoading(false);
     };
 
-    // fill the missing timetable data
+    // timetable 전처리
     const fillTimetableData = (arrivalData: ArrivalInfo, timetable: RenderedTimetableData, selectedLine: string) => {
         const currentTime = getTimeInSeconds(new Date().toTimeString().split(" ")[0]);
         const schedule = getCurrentDaySchedule(timetable);
 
+        // 시간표 정보 중 현재 시간 이후의 열차 정보를 가져옴
         const getUpcomingTrains = (direction: string) =>
             schedule
                 .filter((train) => getTimeInSeconds(train.arrivalTime) > currentTime && train.direction === direction)
@@ -82,17 +80,36 @@ const ArrivalInfoPage: React.FC = () => {
         for (const key of ["up_info", "down_info"] as const) {
             const direction = destinations[selectedLine][key];
             let times = arrivalData[key].times ?? [];
-            times = times.map((train) => ({ ...train, from_schedule: false }));
+            times = times.map((train) => {
+                // 부산김해경전철의 빈 열차번호 채우기
+                if (!train.train_no) {
+                    const arrivalTimeInSeconds = currentTime + train.remain_sec;
+                    const matchedTrain = schedule.find((scheduleTrain) => {
+                        const scheduleArrivalTimeInSeconds = getTimeInSeconds(scheduleTrain.arrivalTime);
+                        return (
+                            // 시간표보다 80초 일찍 ~ 시간표보다 120초 늦게 도착하는 열차를 찾음 (곧 도착 열차의 경우, 최대 20초 일찍 ~ 60초 늦게 도착하는 열차)
+                            scheduleTrain.direction === destinations[selectedLine][key] &&
+                            scheduleArrivalTimeInSeconds >= arrivalTimeInSeconds - 120 &&
+                            scheduleArrivalTimeInSeconds <= arrivalTimeInSeconds + 80
+                        );
+                    });
+                    if (matchedTrain) {
+                        train.train_no = matchedTrain.trainNumber;
+                    }
+                }
+                // 시간표 정보가 아니기 때문에 from_schedule를 false로 설정
+                return { ...train, from_schedule: false };
+            });
+            // 행 수가 2 미만인 경우, 시간표 정보로부터 (2 - 행 수)만큼의 다음 열차 정보를 가져와 추가
             if (times.length < 2) {
                 times = [...times, ...getUpcomingTrains(direction).slice(times.length)];
             }
             arrivalData[key].times = times;
         }
-
         return arrivalData;
     };
 
-    // update the remaining time every second
+    // 매 초마다 남은 시간 업데이트
     useEffect(() => {
         if (arrivalInfo) {
             const intervalId = setInterval(() => {
