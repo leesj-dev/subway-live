@@ -2,7 +2,7 @@
 import typography from "@tailwindcss/typography";
 
 export default {
-    content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
+    content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}", "./node_modules/react-tailwindcss-select/dist/index.esm.js"],
     theme: {
         extend: {
             typography: {

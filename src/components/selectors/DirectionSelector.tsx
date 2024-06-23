@@ -1,5 +1,6 @@
 import React from "react";
-import Selector from "./Selector";
+import Select from "react-tailwindcss-select";
+import { SelectValue } from "react-tailwindcss-select/dist/components/type";
 import { DirectionSelectorProps } from "../../types";
 
 const DirectionSelector: React.FC<DirectionSelectorProps> = ({ direction, setDirection, data }) => {
@@ -8,7 +9,30 @@ const DirectionSelector: React.FC<DirectionSelectorProps> = ({ direction, setDir
         value: dir,
     }));
 
-    return <Selector label="Direction" value={direction} options={directionOptions} handleChange={(e) => setDirection(e.target.value)} />;
+    const handleChange = (value: SelectValue | null) => {
+        if (value && !Array.isArray(value) && typeof value !== "string") {
+            setDirection(value.value);
+        } else {
+            setDirection("");
+        }
+    };
+
+    return (
+        <div className="mb-4">
+            <label htmlFor="direction-select" className="block text-base font-medium text-gray-700 dark:text-gray-300">
+                방향
+            </label>
+            <div className="mt-1 block min-w-28">
+                <Select
+                    value={directionOptions.find((option) => option.value === direction) || null}
+                    onChange={handleChange}
+                    options={directionOptions}
+                    noOptionsMessage={"검색결과가 없습니다"}
+                    placeholder={"방향 선택"}
+                />
+            </div>
+        </div>
+    );
 };
 
 export default DirectionSelector;
