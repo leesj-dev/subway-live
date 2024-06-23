@@ -157,7 +157,7 @@ const ArrivalInfoPage: React.FC = () => {
     }, [arrivalInfo]);
 
     return (
-        <div className="p-6">
+        <div className="px-4 py-6">
             <h1 className="text-2xl text-gray-900 dark:text-gray-100 font-bold mb-8 break-keep">실시간 도착정보</h1>
             <div className="flex flex-wrap justify-center gap-4 md:gap-6 mb-[4vh]">
                 <LineSelector selectedLine={selectedLine} handleLineChange={handleLineChange} stations={stations} />
