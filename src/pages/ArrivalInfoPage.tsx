@@ -84,6 +84,7 @@ const ArrivalInfoPage: React.FC = () => {
 
         for (const key of ["up_info", "down_info"] as const) {
             const direction = destinations[selectedLine][key];
+            const opposite_direction = destinations[selectedLine][key === "up_info" ? "down_info" : "up_info"];
             const scheduleToday = getSchedule(0, direction);
             let times = arrivalData[key].times ?? [];
 
@@ -98,11 +99,16 @@ const ArrivalInfoPage: React.FC = () => {
                     });
                     if (matchedTrain) train.train_no = matchedTrain.trainNumber;
                 }
-                // 2. 시간표 정보가 아니기 때문에 from_schedule를 false로 설정
-                return { ...train, from_schedule: false };
+                // 2. 출발역에서 출발하는 열차의 경우, 시간표 정보임을 표시
+                if (isEndingStation(opposite_direction)) {
+                    return { ...train, from_schedule: true };
+                } // 3. 나머지 일반적인 경우, 시간표 정보가 아니기 때문에 from_schedule를 false로 설정
+                else {
+                    return { ...train, from_schedule: false };
+                }
             });
 
-            // 3. 시간표 정보 중 현재 시간 이후의 열차 정보 2개를 가져옴
+            // 4. 시간표 정보 중 현재 시간 이후의 열차 정보 2개를 가져옴
             const upcomingTrains = scheduleToday
                 .filter((train) => getRemainSec(train) > 0)
                 .slice(0, 2)
@@ -113,7 +119,7 @@ const ArrivalInfoPage: React.FC = () => {
                     from_schedule: true,
                 }));
 
-            // 4. 1) 'UpcomingTrains'가 null이면서 종착역이 아니거나, 2) 바로 다음 열차가 첫차와 같고 남은 시간이 20분 이상이라면, 첫차 운행 시작 시각을 띄워줌
+            // 5. 1) 'UpcomingTrains'가 null이면서 종착역이 아니거나, 2) 바로 다음 열차가 첫차와 같고 남은 시간이 20분 이상이라면, 첫차 운행 시작 시각을 띄워줌
             if (!isEndingStation(direction)) {
                 if (!upcomingTrains.length || (upcomingTrains[0].train_no === scheduleToday[0].trainNumber && upcomingTrains[0].remain_sec >= 1200)) {
                     const firstTrain = !upcomingTrains.length ? getSchedule(1, direction)[0] : scheduleToday[0]; // 1)의 경우라면 익일 첫차를, 2)의 경우라면 당일 열차를 가져옴
@@ -127,12 +133,12 @@ const ArrivalInfoPage: React.FC = () => {
                         },
                     ];
                 }
-                // 5. 행 수가 2 미만인 경우, 시간표 정보로부터 (2 - 행 수)만큼의 다음 열차 정보를 가져와 추가
+                // 6. 행 수가 2 미만인 경우, 시간표 정보로부터 (2 - 행 수)만큼의 다음 열차 정보를 가져와 추가
                 else if (times.length < 2) {
                     times = [...times, ...upcomingTrains.slice(times.length)];
                 }
             }
-            // 6. 업데이트된 times를 arrivalData에 저장
+            // 7. 업데이트된 times를 arrivalData에 저장
             arrivalData[key].times = times;
         }
         return arrivalData;
