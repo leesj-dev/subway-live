@@ -1,1 +1,1 @@
-{"weekday": {"부전": {"PSS11M253": ["23:37:30", "23:38:00"], "PSS11M254": ["23:34:30", "23:35:00"], "PSS11M255": ["", "23:30:00"]}}}
+{"weekday": [{"station": "PSS11M255", "arrivalTime": "", "departureTime": "23:30:00", "direction": "부전"}, {"station": "PSS11M254", "arrivalTime": "23:34:30", "departureTime": "23:35:00", "direction": "부전"}, {"station": "PSS11M253", "arrivalTime": "23:37:30", "departureTime": "23:38:00", "direction": "부전"}, {"station": "PSS11M252", "arrivalTime": "23:42:00", "departureTime": "", "direction": "부전"}]}
