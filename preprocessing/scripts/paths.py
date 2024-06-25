@@ -1,8 +1,5 @@
-csv_path = './preprocessing/trains_BTC.csv'
-codes_path = './preprocessing/codes.csv'
-stations_path = './preprocessing/stations.json'
-arrival_BTC_path = './preprocessing/arrival_BTC.json'
-arrival_others_path = './preprocessing/arrival_others.json'
-arrival_path = './preprocessing/arrival.json'
-timetable_path = './public/timetable'
-traintable_path = './public/traintable'
+codes_path = "./preprocessing/codes.csv"
+stations_path = "./preprocessing/stations.json"
+arrival_path = "./preprocessing/arrival.json"
+timetable_path = "./public/timetable"
+traintable_path = "./public/traintable"

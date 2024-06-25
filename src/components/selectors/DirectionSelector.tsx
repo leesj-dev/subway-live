@@ -1,6 +1,6 @@
 import React from "react";
-import Select from "react-tailwindcss-select";
-import { SelectValue } from "react-tailwindcss-select/dist/components/type";
+import Select from "../react-tailwindcss-select/Select";
+import { SelectValue } from "../react-tailwindcss-select/type";
 import { DirectionSelectorProps } from "../../types";
 
 const DirectionSelector: React.FC<DirectionSelectorProps> = ({ direction, setDirection, data }) => {

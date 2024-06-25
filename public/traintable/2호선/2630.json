@@ -1,1 +1,1 @@
-{"weekday": {"양산": {"PSS239": ["", "07:56:30"], "PSS240": ["08:00:40", "08:01:00"], "PSS241": ["08:02:35", "08:02:55"], "PSS242": ["08:04:35", "08:04:55"], "PSS243": ["08:07", ""]}}}
+{"weekday": [{"station": "PSS239", "arrivalTime": "", "departureTime": "07:56:30", "direction": "양산"}, {"station": "PSS240", "arrivalTime": "08:00:40", "departureTime": "08:01:00", "direction": "양산"}, {"station": "PSS241", "arrivalTime": "08:02:35", "departureTime": "08:02:55", "direction": "양산"}, {"station": "PSS242", "arrivalTime": "08:04:35", "departureTime": "08:04:55", "direction": "양산"}]}

@@ -1,14 +1,28 @@
-import React from "react";
-import Select from "react-tailwindcss-select";
-import { SelectValue } from "react-tailwindcss-select/dist/components/type";
+import React, { useEffect } from "react";
+import Select from "../react-tailwindcss-select/Select";
+import { SelectValue } from "../react-tailwindcss-select/type";
 import { DaySelectorProps } from "../../types";
 
-const DaySelector: React.FC<DaySelectorProps> = ({ day, setDay }) => {
-    const dayOptions = [
+interface DayOption {
+    label: string;
+    value: "weekday" | "saturday" | "holiday";
+}
+
+const DaySelector: React.FC<DaySelectorProps> = ({ day, setDay, availableDays }) => {
+    const defaultDayOptions: DayOption[] = [
         { label: "평일", value: "weekday" },
         { label: "토요일", value: "saturday" },
         { label: "휴일", value: "holiday" },
     ];
+
+    const dayOptions = availableDays ? defaultDayOptions.filter((option) => availableDays.includes(option.value)) : defaultDayOptions;
+
+    useEffect(() => {
+        if (!availableDays) return;
+        if (!availableDays.includes(day)) {
+            setDay(availableDays[0]);
+        }
+    }, [availableDays, day, setDay]);
 
     const handleChange = (value: SelectValue | null) => {
         if (value && !Array.isArray(value) && typeof value !== "string") {

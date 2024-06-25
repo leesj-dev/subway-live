@@ -127,10 +127,10 @@ const ArrivalInfoPage: React.FC = () => {
                         },
                     ];
                 }
-            }
-            // 5. 행 수가 2 미만인 경우, 시간표 정보로부터 (2 - 행 수)만큼의 다음 열차 정보를 가져와 추가
-            else if (times.length < 2) {
-                times = [...times, ...upcomingTrains.slice(times.length)];
+                // 5. 행 수가 2 미만인 경우, 시간표 정보로부터 (2 - 행 수)만큼의 다음 열차 정보를 가져와 추가
+                else if (times.length < 2) {
+                    times = [...times, ...upcomingTrains.slice(times.length)];
+                }
             }
             // 6. 업데이트된 times를 arrivalData에 저장
             arrivalData[key].times = times;

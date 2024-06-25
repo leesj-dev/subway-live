@@ -1,6 +1,6 @@
 import React from "react";
-import Select from "react-tailwindcss-select";
-import { SelectValue } from "react-tailwindcss-select/dist/components/type";
+import Select from "../react-tailwindcss-select/Select";
+import { SelectValue } from "../react-tailwindcss-select/type";
 import { LineSelectorProps } from "../../types";
 
 const StationSelector: React.FC<LineSelectorProps> = ({ selectedLine, handleLineChange, stations }) => {

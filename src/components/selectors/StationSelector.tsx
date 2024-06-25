@@ -1,6 +1,6 @@
 import React from "react";
-import Select from "react-tailwindcss-select";
-import { SelectValue } from "react-tailwindcss-select/dist/components/type";
+import Select from "../react-tailwindcss-select/Select";
+import { SelectValue } from "../react-tailwindcss-select/type";
 import { StationSelectorProps } from "../../types";
 
 const StationSelector: React.FC<StationSelectorProps> = ({ selectedStation, handleStationChange, stations, selectedLine }) => {
@@ -17,6 +17,8 @@ const StationSelector: React.FC<StationSelectorProps> = ({ selectedStation, hand
             handleStationChange({ target: { value: "" } } as React.ChangeEvent<HTMLSelectElement>);
         }
     };
+
+    if (!selectedLine) return null;
 
     return (
         <div className="mb-4">

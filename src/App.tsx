@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import ArrivalInfoPage from "./pages/ArrivalInfoPage";
 import StationTablePage from "./pages/StationTablePage";
+import TrainTablePage from "./pages/TrainTablePage";
 // import TrainTablePage from "./pages/TrainTablePage";
 
 const App: React.FC = () => {
@@ -43,9 +44,7 @@ const App: React.FC = () => {
                                 <Link
                                     to={Menu.link}
                                     className={`flex items-center space-x-2 px-2 py-1 rounded-md text-lg ${
-                                        selectedMenu === Menu.link
-                                            ? "bg-gray-700 dark:bg-gray-700 text-white"
-                                            : "hover:bg-gray-700 dark:hover:bg-gray-700 text-gray-300 dark:text-gray-400"
+                                        selectedMenu === Menu.link ? "bg-gray-700 dark:bg-gray-700 text-white" : "hover:bg-gray-700 dark:hover:bg-gray-700 text-gray-300 dark:text-gray-400"
                                     }`}
                                     onClick={() => setSelectedMenu(Menu.link)}
                                 >
@@ -61,7 +60,7 @@ const App: React.FC = () => {
                         <Route path="/" element={<HomePage />} />
                         <Route path="/arrival" element={<ArrivalInfoPage />} />
                         <Route path="/station" element={<StationTablePage />} />
-                        <Route path="/train" element={<h1 className="text-gray-900 dark:text-gray-100 text-2xl font-semibold tracking-wide">Under Development</h1>} />
+                        <Route path="/train" element={<TrainTablePage />} />
                     </Routes>
                 </div>
             </div>
