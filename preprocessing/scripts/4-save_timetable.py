@@ -21,11 +21,23 @@ for line in arrival:
                             "trainNumber": train,
                             "startStation": stations_id[stations_name.index(start_station)],
                             "endStation": stations_id[stations_name.index(end_station)],
-                            "arrivalTime": from_24_to_00(arrival[line][train][direction][day][station][0]),
-                            "departureTime": from_24_to_00(arrival[line][train][direction][day][station][1]),
+                            "arrivalTime": arrival[line][train][direction][day][station][0],
+                            "departureTime": arrival[line][train][direction][day][station][1],
                             "direction": direction,
                         }
                     )
+
+# sort by arrival_time and departure_time
+for station in station_data:
+    for day in station_data[station]:
+        station_data[station][day] = sorted(station_data[station][day], key=lambda x: (x["arrivalTime"], x["departureTime"]))
+
+# convert arrivalTime and departureTime to from_24_to_00 format
+for station in station_data:
+    for day in station_data[station]:
+        for entry in station_data[station][day]:
+            entry["arrivalTime"] = from_24_to_00(entry["arrivalTime"])
+            entry["departureTime"] = from_24_to_00(entry["departureTime"])
 
 for station, station_info in station_data.items():
     file_path = os.path.join(timetable_path, f"{station}.json")

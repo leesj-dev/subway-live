@@ -1,5 +1,6 @@
 codes_path = "./preprocessing/codes.csv"
 stations_path = "./preprocessing/stations.json"
+arrival_original_path = "./preprocessing/arrival_original.json"
 arrival_path = "./preprocessing/arrival.json"
 timetable_path = "./public/timetable"
 traintable_path = "./public/traintable"

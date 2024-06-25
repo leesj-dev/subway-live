@@ -1,7 +1,7 @@
 from collections import defaultdict
 import csv
 from utils import load_json, save_json, fetch_json, format_time, convert_time, add_time, nested_dict
-from paths import codes_path, stations_path, arrival_path
+from paths import codes_path, stations_path, arrival_original_path
 from env_variables import API_LINK, SERVICE_KEY
 
 
@@ -113,7 +113,7 @@ with open(codes_path, "r", encoding="utf8") as csv_file:
                                 train_number = "2630"
                             elif line_name == "2호선" and day_type == "holiday":
                                 train_number = "2452"
-                            elif line_name == "2호선" and station_name == "부산대양산캠퍼스":
+                            elif line_name == "2호선" and station_name in ["부산대양산캠퍼스", "남양산"]:
                                 train_number = "2602"
                             else:
                                 print(f"열차번호 없음: {station_name.ljust(7)}\t{direction_station}\t{day_type}\t?\t{times}")
@@ -130,4 +130,4 @@ for line in output:
             for day in output[line][train][direction]:
                 output[line][train][direction][day] = dict(sorted(output[line][train][direction][day].items(), key=lambda x: (x[1][0], x[1][1])))
 
-save_json(arrival_path, output)
+save_json(arrival_original_path, output)
