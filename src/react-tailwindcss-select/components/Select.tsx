@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
-import useOnClickOutside from "./use-onclick-outside";
+import useOnClickOutside from "../hooks/use-onclick-outside";
 
 import { ChevronIcon, CloseIcon } from "./Icons";
 import Options, { containsKChar } from "./Options";
 import SearchInput from "./SearchInput";
 import SelectProvider from "./SelectProvider";
-import { Option, Options as ListOption, SelectProps } from "./type";
+import { Option, Options as ListOption, SelectProps } from "../types";
 
 const Select: React.FC<SelectProps> = ({
     options = [],
@@ -139,16 +139,19 @@ const Select: React.FC<SelectProps> = ({
 
     const divRef = useRef<HTMLDivElement>(null);
 
-    // 검색 때문에 focus가 제대로 안되는 문제 해결
-    useEffect(() => {
-        const timeoutId = setTimeout(() => {
-            if (divRef.current) {
-                divRef.current.focus();
-            }
-        }, 0);
+    // 열고 닫을 때 자연스러운 전환
+    const [shouldRender, setShouldRender] = useState(false);
+    const [fade, setFade] = useState(false);
 
-        return () => clearTimeout(timeoutId);
-    }, [open]);
+    useEffect(() => {
+        if (open && !isDisabled) {
+            setShouldRender(true);
+            setTimeout(() => setFade(true), 10); // Small delay to ensure the element is rendered before fade in starts
+        } else {
+            setFade(false);
+            setTimeout(() => setShouldRender(false), 300); // Match with the Tailwind transition duration
+        }
+    }, [open, isDisabled]);
 
     return (
         <SelectProvider value={value} handleValueChange={handleValueChange}>
@@ -165,7 +168,7 @@ const Select: React.FC<SelectProps> = ({
                             : "bg-white dark:bg-gray-700 hover:border-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:ring focus:ring-blue-500/20 dark:focus:ring-blue-400/20"
                     }`}
                 >
-                    <div className="absolute inset-0 left-0 right-0 justify-center items-center px-4 flex flex-wrap gap-1">
+                    <div className="absolute inset-0 left-0 right-0 justify-center items-center px-[1.35rem] flex flex-wrap gap-1">
                         {!isMultiple ? (
                             <p className="truncate cursor-default select-none">{value && !Array.isArray(value) ? value.label : placeholder}</p>
                         ) : (
@@ -205,8 +208,11 @@ const Select: React.FC<SelectProps> = ({
                     </div>
                 </div>
 
-                {open && !isDisabled && (
-                    <div className={"absolute z-10 w-full bg-white dark:bg-gray-800 shadow-lg border dark:border-gray-600 rounded-lg py-1.5 mt-1.5 text-sm text-gray-700 dark:text-gray-300"}>
+                {shouldRender && (
+                    <div
+                        className={`absolute z-10 w-full bg-white dark:bg-gray-800 shadow-lg border dark:border-gray-600 rounded-lg py-1.5 mt-1.5 text-sm text-gray-700 dark:text-gray-300
+                            transition-opacity duration-300 ${fade ? "opacity-100" : "opacity-0"}`}
+                    >
                         {isSearchable && (
                             <SearchInput
                                 ref={searchBoxRef}

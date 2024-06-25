@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useMemo } from "react";
 
-import { Option } from "./type";
+import { Option } from "../types";
 
 interface Store {
     value: Option | Option[] | null;
@@ -15,9 +15,9 @@ interface Props {
 
 export const SelectContext = createContext<Store>({
     value: null,
-    handleValueChange: selected => {
+    handleValueChange: (selected) => {
         console.log("selected:", selected);
-    }
+    },
 });
 
 export const useSelectContext = (): Store => {
@@ -28,7 +28,7 @@ const SelectProvider: React.FC<Props> = ({ value, handleValueChange, children })
     const store = useMemo(() => {
         return {
             value,
-            handleValueChange
+            handleValueChange,
         };
     }, [handleValueChange, value]);
 

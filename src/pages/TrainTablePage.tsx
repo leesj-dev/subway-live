@@ -4,7 +4,7 @@ import { dateFromToday } from "../utils/timeUtils";
 import SyncLoader from "react-spinners/SyncLoader";
 import stations from "../data/stations";
 import trains from "../data/trains";
-import destinations from "../data/destinations";
+import directions from "../data/directions";
 import LineSelector from "../components/selectors/LineSelector";
 import TrainSelector from "../components/selectors/TrainSelector";
 import DaySelector from "../components/selectors/DaySelector";
@@ -47,7 +47,7 @@ const TrainTablePage: React.FC = () => {
             <h1 className="text-2xl text-gray-900 dark:text-gray-100 font-bold mb-8 break-keep">열차 시간표</h1>
             <div className="flex flex-wrap justify-center gap-4 md:gap-6 mb-8">
                 <LineSelector selectedLine={selectedLine} handleLineChange={handleLineChange} stations={stations} />
-                <TrainSelector selectedTrain={selectedTrain} handleTrainChange={handleTrainChange} trains={trains} selectedLine={selectedLine} destinations={destinations} />
+                <TrainSelector selectedTrain={selectedTrain} handleTrainChange={handleTrainChange} trains={trains} selectedLine={selectedLine} directions={directions} />
             </div>
             {loading ? (
                 <div className="mt-[10vh]">

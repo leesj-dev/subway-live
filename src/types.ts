@@ -1,4 +1,4 @@
-// stations
+// data types
 export interface Stations {
     [line: string]: {
         id: string;
@@ -6,11 +6,17 @@ export interface Stations {
     }[];
 }
 
-// trains
 export interface Trains {
     [line: string]: {
         up_info: string[];
         down_info: string[];
+    };
+}
+
+export interface Directions {
+    [line: string]: {
+        up_info: string;
+        down_info: string;
     };
 }
 
@@ -43,24 +49,16 @@ export interface TrainTableProps {
     selectedLine: string;
 }
 
-export interface SelectorProps<ValueType> {
-    label: string;
-    value: ValueType;
-    options: { label: string; value: ValueType }[];
-    handleChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-    disabled?: boolean;
-}
-
 export interface LineSelectorProps {
     selectedLine: string;
     handleLineChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-    stations: { [key: string]: Array<{ name: string; id: string }> };
+    stations: Stations;
 }
 
 export interface StationSelectorProps {
     selectedStation: string;
     handleStationChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-    stations: { [key: string]: Array<{ name: string; id: string }> };
+    stations: Stations;
     selectedLine: string;
 }
 
@@ -69,7 +67,7 @@ export interface TrainSelectorProps {
     handleTrainChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
     trains: Trains;
     selectedLine: string;
-    destinations: { [key: string]: { up_info: string; down_info: string } };
+    directions: Directions;
 }
 
 export interface DirectionSelectorProps {
@@ -137,5 +135,7 @@ export interface RenderedStationTime {
 }
 
 export interface RenderedTraintableData {
-    [day: string]: RenderedStationTime[];
+    weekday?: RenderedStationTime[];
+    saturday?: RenderedStationTime[];
+    holiday?: RenderedStationTime[];
 }

@@ -1,19 +1,21 @@
 import React from "react";
-import Select from "../react-tailwindcss-select/Select";
-import { SelectValue } from "../react-tailwindcss-select/type";
+import Select from "../../react-tailwindcss-select/components/Select";
+import { SelectValue } from "../../react-tailwindcss-select/types";
 import { TrainSelectorProps } from "../../types";
 
-const TrainSelector: React.FC<TrainSelectorProps> = ({ selectedTrain, handleTrainChange, trains, selectedLine, destinations }) => {
-    const trainOptions = [
-        {
-            label: `${destinations[selectedLine]?.up_info}행`,
-            options: trains[selectedLine]?.up_info.sort((a, b) => a.localeCompare(b)).map((train) => ({ label: train, value: train })),
-        },
-        {
-            label: `${destinations[selectedLine]?.down_info}행`,
-            options: trains[selectedLine]?.down_info.sort((a, b) => a.localeCompare(b)).map((train) => ({ label: train, value: train })),
-        },
-    ];
+const TrainSelector: React.FC<TrainSelectorProps> = ({ selectedTrain, handleTrainChange, trains, selectedLine, directions }) => {
+    const trainOptions = selectedLine
+        ? [
+              {
+                  label: `${directions[selectedLine]?.up_info}행`,
+                  options: trains[selectedLine]?.up_info.sort((a, b) => a.localeCompare(b)).map((train) => ({ label: train, value: train })),
+              },
+              {
+                  label: `${directions[selectedLine]?.down_info}행`,
+                  options: trains[selectedLine]?.down_info.sort((a, b) => a.localeCompare(b)).map((train) => ({ label: train, value: train })),
+              },
+          ]
+        : [];
 
     const handleChange = (value: SelectValue) => {
         if (value && !Array.isArray(value) && typeof value !== "string") {
@@ -24,7 +26,6 @@ const TrainSelector: React.FC<TrainSelectorProps> = ({ selectedTrain, handleTrai
     };
 
     // Flatten all options to search for the selected train
-    if (!selectedLine) return null;
     const allOptions = trainOptions.flatMap((group) => group.options);
     const selectedOption = allOptions.find((option) => option.value === selectedTrain) || null;
 

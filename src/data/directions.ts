@@ -1,4 +1,6 @@
-const destinations: { [key: string]: { up_info: string; down_info: string } } = {
+import { Directions } from "../types";
+
+const directions: Directions = {
     "1호선": { up_info: "다대포해수욕장", down_info: "노포" },
     "2호선": { up_info: "장산", down_info: "양산" },
     "3호선": { up_info: "수영", down_info: "대저" },
@@ -7,4 +9,4 @@ const destinations: { [key: string]: { up_info: string; down_info: string } } = 
     동해선: { up_info: "부전", down_info: "태화강" },
 };
 
-export default destinations;
+export default directions;

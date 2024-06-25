@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import SyncLoader from "react-spinners/SyncLoader";
 import stations from "../data/stations";
-import destinations from "../data/destinations";
+import directions from "../data/directions";
 import LineSelector from "../components/selectors/LineSelector";
 import StationSelector from "../components/selectors/StationSelector";
 import ArrivalTable from "../components/ArrivalTable";
@@ -83,8 +83,8 @@ const ArrivalInfoPage: React.FC = () => {
         }
 
         for (const key of ["up_info", "down_info"] as const) {
-            const direction = destinations[selectedLine][key];
-            const opposite_direction = destinations[selectedLine][key === "up_info" ? "down_info" : "up_info"];
+            const direction = directions[selectedLine][key];
+            const opposite_direction = directions[selectedLine][key === "up_info" ? "down_info" : "up_info"];
             const scheduleToday = getSchedule(0, direction);
             let times = arrivalData[key].times ?? [];
 
@@ -176,8 +176,8 @@ const ArrivalInfoPage: React.FC = () => {
             ) : (
                 arrivalInfo && (
                     <div className="flex flex-wrap justify-center gap-6">
-                        <ArrivalTable direction={destinations[selectedLine]["up_info"]} times={arrivalInfo.up_info.times} formatTime={formatTime} />
-                        <ArrivalTable direction={destinations[selectedLine]["down_info"]} times={arrivalInfo.down_info.times} formatTime={formatTime} />
+                        <ArrivalTable direction={directions[selectedLine]["up_info"]} times={arrivalInfo.up_info.times} formatTime={formatTime} />
+                        <ArrivalTable direction={directions[selectedLine]["down_info"]} times={arrivalInfo.down_info.times} formatTime={formatTime} />
                     </div>
                 )
             )}

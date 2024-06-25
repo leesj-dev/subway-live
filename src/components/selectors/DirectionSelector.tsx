@@ -1,6 +1,6 @@
 import React from "react";
-import Select from "../react-tailwindcss-select/Select";
-import { SelectValue } from "../react-tailwindcss-select/type";
+import Select from "../../react-tailwindcss-select/components/Select";
+import { SelectValue } from "../../react-tailwindcss-select/types";
 import { DirectionSelectorProps } from "../../types";
 
 const DirectionSelector: React.FC<DirectionSelectorProps> = ({ direction, setDirection, data }) => {
@@ -22,7 +22,7 @@ const DirectionSelector: React.FC<DirectionSelectorProps> = ({ direction, setDir
             <label htmlFor="direction-select" className="block text-base font-medium text-gray-700 dark:text-gray-300">
                 방향
             </label>
-            <div className="mt-1 block min-w-28">
+            <div className="mt-1 block min-w-32">
                 <Select
                     value={directionOptions.find((option) => option.value === direction) || null}
                     onChange={handleChange}

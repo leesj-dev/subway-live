@@ -3,7 +3,7 @@ import React, { useCallback, useMemo } from "react";
 import DisabledItem from "./DisabledItem";
 import GroupItem from "./GroupItem";
 import Item from "./Item";
-import { Option, Options as ListOption } from "./type";
+import { Option, Options as ListOption } from "../types";
 
 interface OptionsProps {
     list: ListOption;

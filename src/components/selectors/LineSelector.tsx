@@ -1,9 +1,9 @@
 import React from "react";
-import Select from "../react-tailwindcss-select/Select";
-import { SelectValue } from "../react-tailwindcss-select/type";
+import Select from "../../react-tailwindcss-select/components/Select";
+import { SelectValue } from "../../react-tailwindcss-select/types";
 import { LineSelectorProps } from "../../types";
 
-const StationSelector: React.FC<LineSelectorProps> = ({ selectedLine, handleLineChange, stations }) => {
+const LineSelector: React.FC<LineSelectorProps> = ({ selectedLine, handleLineChange, stations }) => {
     const lineOptions = Object.keys(stations).map((line) => ({
         label: line,
         value: line,
@@ -35,4 +35,4 @@ const StationSelector: React.FC<LineSelectorProps> = ({ selectedLine, handleLine
     );
 };
 
-export default StationSelector;
+export default LineSelector;
