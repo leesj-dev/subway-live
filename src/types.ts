@@ -34,52 +34,60 @@ export interface ArrivalInfo {
     down_info: { times: ArrivalTimes[] | null };
 }
 
-// props
+// page props
+export interface PageTemplateProps {
+    title: string;
+    selectedLine: string;
+    handleLineChange: React.ChangeEventHandler<HTMLSelectElement>;
+    entitySelector: JSX.Element;
+    loading: boolean;
+    content: JSX.Element | null;
+}
+
+// table props
 export interface ArrivalTableProps {
     direction: string;
     times: ArrivalTimes[] | null;
-    formatTime: (seconds: number, fromSchedule: boolean) => string;
     selectedLine?: string; // optional
     stationID?: string; // optional
 }
 
-export interface TrainTableProps {
+export interface TimetableProps {
+    trainTimes: RenderedTrainTime[];
+}
+export interface TraintableProps {
     stationTimes: RenderedStationTime[];
-    stations: Stations;
     selectedLine: string;
 }
 
+// selector props
 export interface LineSelectorProps {
     selectedLine: string;
     handleLineChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-    stations: Stations;
 }
 
 export interface StationSelectorProps {
     selectedStation: string;
     handleStationChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-    stations: Stations;
     selectedLine: string;
 }
 
 export interface TrainSelectorProps {
     selectedTrain: string;
     handleTrainChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-    trains: Trains;
     selectedLine: string;
-    directions: Directions;
 }
 
 export interface DirectionSelectorProps {
     direction: string;
     setDirection: (value: string) => void;
-    data: { weekday: { direction: string }[] };
+    data: { [day: string]: { direction: string }[] };
 }
 
 export interface DaySelectorProps {
-    day: "weekday" | "saturday" | "holiday";
-    setDay: (day: "weekday" | "saturday" | "holiday") => void;
-    availableDays?: Array<"weekday" | "saturday" | "holiday">;
+    day: string;
+    setDay: (day: string) => void;
+    availableDays?: string[];
 }
 
 // timetable
@@ -105,9 +113,7 @@ export interface DayData {
 }
 
 export interface TimetableData {
-    weekday: DayData;
-    saturday: DayData;
-    holiday: DayData;
+    [day: string]: DayData;
 }
 
 // timetable rendering
@@ -121,9 +127,7 @@ export interface RenderedTrainTime {
 }
 
 export interface RenderedTimetableData {
-    weekday: RenderedTrainTime[];
-    saturday: RenderedTrainTime[];
-    holiday: RenderedTrainTime[];
+    [day: string]: RenderedTrainTime[];
 }
 
 // traintable rendering
@@ -135,7 +139,5 @@ export interface RenderedStationTime {
 }
 
 export interface RenderedTraintableData {
-    weekday?: RenderedStationTime[];
-    saturday?: RenderedStationTime[];
-    holiday?: RenderedStationTime[];
+    [day: string]: RenderedStationTime[];
 }

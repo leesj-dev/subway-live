@@ -1,7 +1,8 @@
 import React from "react";
-import { ArrivalTableProps } from "../types";
+import { ArrivalTableProps } from "../../types";
+import { formatTime } from "../../utils/timeUtils";
 
-const ArrivalTable: React.FC<ArrivalTableProps> = ({ direction, times, formatTime }) => {
+const ArrivalTable: React.FC<ArrivalTableProps> = ({ direction, times }) => {
     return (
         <div>
             <h2 className="text-lg font-bold mb-2 text-gray-900 dark:text-gray-100">{direction} 방향</h2>

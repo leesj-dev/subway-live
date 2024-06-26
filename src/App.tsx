@@ -8,7 +8,6 @@ import HomePage from "./pages/HomePage";
 import ArrivalInfoPage from "./pages/ArrivalInfoPage";
 import StationTablePage from "./pages/StationTablePage";
 import TrainTablePage from "./pages/TrainTablePage";
-// import TrainTablePage from "./pages/TrainTablePage";
 
 const App: React.FC = () => {
     const [showFullMenu, setShowFullMenu] = useState<boolean>(window.innerWidth > 768);

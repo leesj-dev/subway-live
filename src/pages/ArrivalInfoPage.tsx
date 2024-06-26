@@ -1,12 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import SyncLoader from "react-spinners/SyncLoader";
-import stations from "../data/stations";
-import directions from "../data/directions";
-import LineSelector from "../components/selectors/LineSelector";
+import stations from "../constants/stations";
+import directions from "../constants/directions";
+import PageTemplate from "./PageTemplate";
 import StationSelector from "../components/selectors/StationSelector";
-import ArrivalTable from "../components/ArrivalTable";
-import { getTimeInSeconds, formatTime, dateFromToday } from "../utils/timeUtils";
+import ArrivalTable from "../components/tables/ArrivalTable";
+import { getTimeInSeconds, dateFromToday } from "../utils/timeUtils";
 import { ArrivalTimes, ArrivalInfo, RenderedTimetableData, RenderedTrainTime } from "../types";
 
 const ArrivalInfoPage: React.FC = () => {
@@ -162,26 +161,22 @@ const ArrivalInfoPage: React.FC = () => {
         }
     }, [arrivalInfo]);
 
-    return (
-        <div className="px-4 py-6">
-            <h1 className="text-2xl text-gray-900 dark:text-gray-100 font-bold mb-8 break-keep">실시간 도착정보</h1>
-            <div className="flex flex-wrap justify-center gap-4 md:gap-6 mb-[4vh]">
-                <LineSelector selectedLine={selectedLine} handleLineChange={handleLineChange} stations={stations} />
-                <StationSelector selectedStation={selectedStation} handleStationChange={handleStationChange} stations={stations} selectedLine={selectedLine} />
-            </div>
-            {loading ? (
-                <div className="mt-[10vh]">
-                    <SyncLoader color={"#718096"} size={20} />
-                </div>
-            ) : (
-                arrivalInfo && (
-                    <div className="flex flex-wrap justify-center gap-6">
-                        <ArrivalTable direction={directions[selectedLine]["up_info"]} times={arrivalInfo.up_info.times} formatTime={formatTime} />
-                        <ArrivalTable direction={directions[selectedLine]["down_info"]} times={arrivalInfo.down_info.times} formatTime={formatTime} />
-                    </div>
-                )
-            )}
+    const content = arrivalInfo && (
+        <div className="flex flex-wrap justify-center gap-6">
+            <ArrivalTable direction={directions[selectedLine]["up_info"]} times={arrivalInfo.up_info.times} />
+            <ArrivalTable direction={directions[selectedLine]["down_info"]} times={arrivalInfo.down_info.times} />
         </div>
+    );
+
+    return (
+        <PageTemplate
+            title="실시간 도착정보"
+            selectedLine={selectedLine}
+            handleLineChange={handleLineChange}
+            loading={loading}
+            content={content}
+            entitySelector={<StationSelector selectedStation={selectedStation} handleStationChange={handleStationChange} selectedLine={selectedLine} />}
+        />
     );
 };
 

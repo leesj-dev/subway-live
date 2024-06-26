@@ -1,21 +1,20 @@
 import React from "react";
-import Select from "../../react-tailwindcss-select/components/Select";
-import { SelectValue } from "../../react-tailwindcss-select/types";
+import Select from "react-tailwindcss-select";
+import useSelect from "../../hooks/useSelect";
 import { LineSelectorProps } from "../../types";
+import stations from "../../constants/stations";
 
-const LineSelector: React.FC<LineSelectorProps> = ({ selectedLine, handleLineChange, stations }) => {
+const LineSelector: React.FC<LineSelectorProps> = ({ selectedLine, handleLineChange }) => {
     const lineOptions = Object.keys(stations).map((line) => ({
         label: line,
         value: line,
     }));
 
-    const handleChange = (value: SelectValue) => {
-        if (value && !Array.isArray(value) && typeof value !== "string") {
-            handleLineChange({ target: { value: value.value } } as React.ChangeEvent<HTMLSelectElement>);
-        } else {
-            handleLineChange({ target: { value: "" } } as React.ChangeEvent<HTMLSelectElement>);
-        }
-    };
+    const { selectedOption, handleChange } = useSelect({
+        options: lineOptions,
+        selectedValue: selectedLine,
+        handleChangeCallback: (value) => handleLineChange({ target: { value } } as React.ChangeEvent<HTMLSelectElement>),
+    });
 
     return (
         <div className="mb-4">
@@ -23,13 +22,7 @@ const LineSelector: React.FC<LineSelectorProps> = ({ selectedLine, handleLineCha
                 노선명
             </label>
             <div className="mt-1 block min-w-[10.5rem]">
-                <Select
-                    value={lineOptions.find((option) => option.value === selectedLine) || null}
-                    onChange={handleChange}
-                    options={lineOptions}
-                    noOptionsMessage={"검색결과가 없습니다"}
-                    placeholder={"노선 선택"}
-                />
+                <Select value={selectedOption} onChange={handleChange} options={lineOptions} noOptionsMessage={"검색결과가 없습니다"} placeholder={"노선 선택"} />
             </div>
         </div>
     );

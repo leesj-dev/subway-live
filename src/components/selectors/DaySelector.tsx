@@ -1,15 +1,10 @@
 import React, { useEffect } from "react";
-import Select from "../../react-tailwindcss-select/components/Select";
-import { SelectValue } from "../../react-tailwindcss-select/types";
+import Select from "react-tailwindcss-select";
+import useSelect from "../../hooks/useSelect";
 import { DaySelectorProps } from "../../types";
 
-interface DayOption {
-    label: string;
-    value: "weekday" | "saturday" | "holiday";
-}
-
 const DaySelector: React.FC<DaySelectorProps> = ({ day, setDay, availableDays }) => {
-    const defaultDayOptions: DayOption[] = [
+    const defaultDayOptions = [
         { label: "평일", value: "weekday" },
         { label: "토요일", value: "saturday" },
         { label: "휴일", value: "holiday" },
@@ -24,13 +19,11 @@ const DaySelector: React.FC<DaySelectorProps> = ({ day, setDay, availableDays })
         }
     }, [availableDays, day, setDay]);
 
-    const handleChange = (value: SelectValue | null) => {
-        if (value && !Array.isArray(value) && typeof value !== "string") {
-            setDay(value.value as "weekday" | "saturday" | "holiday");
-        } else {
-            setDay("" as "weekday" | "saturday" | "holiday");
-        }
-    };
+    const { selectedOption, handleChange } = useSelect({
+        options: dayOptions,
+        selectedValue: day,
+        handleChangeCallback: (value) => setDay(value),
+    });
 
     return (
         <div className="mb-4">
@@ -38,13 +31,7 @@ const DaySelector: React.FC<DaySelectorProps> = ({ day, setDay, availableDays })
                 날짜
             </label>
             <div className="mt-1 block min-w-32">
-                <Select
-                    value={dayOptions.find((option) => option.value === day) || null}
-                    onChange={handleChange}
-                    options={dayOptions}
-                    noOptionsMessage={"검색결과가 없습니다"}
-                    placeholder={"날짜 선택"}
-                />
+                <Select value={selectedOption} onChange={handleChange} options={dayOptions} noOptionsMessage={"검색결과가 없습니다"} placeholder={"날짜 선택"} />
             </div>
         </div>
     );

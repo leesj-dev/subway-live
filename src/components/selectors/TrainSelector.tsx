@@ -1,9 +1,11 @@
 import React from "react";
-import Select from "../../react-tailwindcss-select/components/Select";
-import { SelectValue } from "../../react-tailwindcss-select/types";
+import Select from "react-tailwindcss-select";
+import useSelect from "../../hooks/useSelect";
 import { TrainSelectorProps } from "../../types";
+import directions from "../../constants/directions";
+import trains from "../../constants/trains";
 
-const TrainSelector: React.FC<TrainSelectorProps> = ({ selectedTrain, handleTrainChange, trains, selectedLine, directions }) => {
+const TrainSelector: React.FC<TrainSelectorProps> = ({ selectedTrain, handleTrainChange, selectedLine }) => {
     const trainOptions = selectedLine
         ? [
               {
@@ -17,17 +19,13 @@ const TrainSelector: React.FC<TrainSelectorProps> = ({ selectedTrain, handleTrai
           ]
         : [];
 
-    const handleChange = (value: SelectValue) => {
-        if (value && !Array.isArray(value) && typeof value !== "string") {
-            handleTrainChange({ target: { value: value.value } } as React.ChangeEvent<HTMLSelectElement>);
-        } else {
-            handleTrainChange({ target: { value: "" } } as React.ChangeEvent<HTMLSelectElement>);
-        }
-    };
-
-    // Flatten all options to search for the selected train
     const allOptions = trainOptions.flatMap((group) => group.options);
-    const selectedOption = allOptions.find((option) => option.value === selectedTrain) || null;
+
+    const { selectedOption, handleChange } = useSelect({
+        options: allOptions,
+        selectedValue: selectedTrain,
+        handleChangeCallback: (value) => handleTrainChange({ target: { value } } as React.ChangeEvent<HTMLSelectElement>),
+    });
 
     return (
         <div className="mb-4">

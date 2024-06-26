@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { dateFromToday } from "../utils/timeUtils";
-import SyncLoader from "react-spinners/SyncLoader";
-import stations from "../data/stations";
-import LineSelector from "../components/selectors/LineSelector";
+import stations from "../constants/stations";
+import PageTemplate from "./PageTemplate";
 import StationSelector from "../components/selectors/StationSelector";
 import DirectionSelector from "../components/selectors/DirectionSelector";
 import DaySelector from "../components/selectors/DaySelector";
-import Timetable from "../components/Timetable";
+import Timetable from "../components/tables/Timetable";
 import { RenderedTimetableData } from "../types";
 
 const StationTablePage: React.FC = () => {
@@ -15,7 +14,7 @@ const StationTablePage: React.FC = () => {
     const [selectedStation, setSelectedStation] = useState<string>("");
     const [data, setData] = useState<RenderedTimetableData | null>(null);
     const [direction, setDirection] = useState<string>("");
-    const [day, setDay] = useState<"weekday" | "saturday" | "holiday">(dateFromToday(0));
+    const [day, setDay] = useState<string>(dateFromToday(0));
     const [loading, setLoading] = useState<boolean>(false);
 
     const handleLineChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -39,30 +38,26 @@ const StationTablePage: React.FC = () => {
 
     const filteredTrainTimes = data?.[day].filter((train) => train.direction === direction) || [];
 
-    return (
-        <div className="px-2 py-6">
-            <h1 className="text-2xl text-gray-900 dark:text-gray-100 font-bold mb-8 break-keep">역 시간표</h1>
-            <div className="flex flex-wrap justify-center gap-4 md:gap-6 mb-8">
-                <LineSelector selectedLine={selectedLine} handleLineChange={handleLineChange} stations={stations} />
-                <StationSelector selectedStation={selectedStation} handleStationChange={handleStationChange} stations={stations} selectedLine={selectedLine} />
-            </div>
-            {loading ? (
-                <div className="mt-[10vh]">
-                    <SyncLoader color={"#718096"} size={20} />
+    const content =
+        selectedStation && data ? (
+            <div className="space-y-4">
+                <div className="flex justify-center gap-4">
+                    <DirectionSelector direction={direction} setDirection={setDirection} data={data} />
+                    <DaySelector day={day} setDay={setDay} />
                 </div>
-            ) : (
-                selectedStation &&
-                data && (
-                    <div className="space-y-4">
-                        <div className="flex justify-center gap-4">
-                            <DirectionSelector direction={direction} setDirection={setDirection} data={data} />
-                            <DaySelector day={day} setDay={setDay} />
-                        </div>
-                        {Timetable(filteredTrainTimes)}
-                    </div>
-                )
-            )}
-        </div>
+                <Timetable trainTimes={filteredTrainTimes} />
+            </div>
+        ) : null;
+
+    return (
+        <PageTemplate
+            title="역 시간표"
+            selectedLine={selectedLine}
+            handleLineChange={handleLineChange}
+            loading={loading}
+            content={content}
+            entitySelector={<StationSelector selectedStation={selectedStation} handleStationChange={handleStationChange} selectedLine={selectedLine} />}
+        />
     );
 };
 

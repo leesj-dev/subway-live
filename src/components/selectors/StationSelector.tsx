@@ -1,22 +1,21 @@
 import React from "react";
-import Select from "../../react-tailwindcss-select/components/Select";
-import { SelectValue } from "../../react-tailwindcss-select/types";
+import Select from "react-tailwindcss-select";
+import useSelect from "../../hooks/useSelect";
 import { StationSelectorProps } from "../../types";
+import stations from "../../constants/stations";
 
-const StationSelector: React.FC<StationSelectorProps> = ({ selectedStation, handleStationChange, stations, selectedLine }) => {
+const StationSelector: React.FC<StationSelectorProps> = ({ selectedStation, handleStationChange, selectedLine }) => {
     const stationOptions =
         stations[selectedLine]?.map((station) => ({
             label: station.name,
             value: station.name,
         })) || [];
 
-    const handleChange = (value: SelectValue) => {
-        if (value && !Array.isArray(value) && typeof value !== "string") {
-            handleStationChange({ target: { value: value.value } } as React.ChangeEvent<HTMLSelectElement>);
-        } else {
-            handleStationChange({ target: { value: "" } } as React.ChangeEvent<HTMLSelectElement>);
-        }
-    };
+    const { selectedOption, handleChange } = useSelect({
+        options: stationOptions,
+        selectedValue: selectedStation,
+        handleChangeCallback: (value) => handleStationChange({ target: { value: value } } as React.ChangeEvent<HTMLSelectElement>),
+    });
 
     return (
         <div className="mb-4">
@@ -25,13 +24,13 @@ const StationSelector: React.FC<StationSelectorProps> = ({ selectedStation, hand
             </label>
             <div className="mt-1 block min-w-[10.5rem]">
                 <Select
-                    value={stationOptions.find((option) => option.value === selectedStation) || null}
+                    value={selectedOption}
                     onChange={handleChange}
                     options={stationOptions}
                     isDisabled={!selectedLine}
                     isSearchable={true}
-                    noOptionsMessage={"검색결과가 없습니다"}
-                    placeholder={"역 선택"}
+                    noOptionsMessage="검색결과가 없습니다"
+                    placeholder="역 선택"
                 />
             </div>
         </div>

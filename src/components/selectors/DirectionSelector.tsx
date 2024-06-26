@@ -1,6 +1,6 @@
 import React from "react";
-import Select from "../../react-tailwindcss-select/components/Select";
-import { SelectValue } from "../../react-tailwindcss-select/types";
+import Select from "react-tailwindcss-select";
+import useSelect from "../../hooks/useSelect";
 import { DirectionSelectorProps } from "../../types";
 
 const DirectionSelector: React.FC<DirectionSelectorProps> = ({ direction, setDirection, data }) => {
@@ -9,13 +9,11 @@ const DirectionSelector: React.FC<DirectionSelectorProps> = ({ direction, setDir
         value: dir,
     }));
 
-    const handleChange = (value: SelectValue | null) => {
-        if (value && !Array.isArray(value) && typeof value !== "string") {
-            setDirection(value.value);
-        } else {
-            setDirection("");
-        }
-    };
+    const { selectedOption, handleChange } = useSelect({
+        options: directionOptions,
+        selectedValue: direction,
+        handleChangeCallback: (value) => setDirection(value),
+    });
 
     return (
         <div className="mb-4">
@@ -23,13 +21,7 @@ const DirectionSelector: React.FC<DirectionSelectorProps> = ({ direction, setDir
                 방향
             </label>
             <div className="mt-1 block min-w-32">
-                <Select
-                    value={directionOptions.find((option) => option.value === direction) || null}
-                    onChange={handleChange}
-                    options={directionOptions}
-                    noOptionsMessage={"검색결과가 없습니다"}
-                    placeholder={"방향 선택"}
-                />
+                <Select value={selectedOption} onChange={handleChange} options={directionOptions} noOptionsMessage="검색결과가 없습니다" placeholder="방향 선택" />
             </div>
         </div>
     );
