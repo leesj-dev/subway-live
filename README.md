@@ -20,3 +20,4 @@
 * Loading Spinner: `react-spinners`
 * Icons: `react-icons`
 * iOS Safari Optimization: `postcss-100vh-fx`
+* Select Component: `react-tailwindcss-select` - **fork 후 커스텀 진행, `yalc`을 사용하여 local package로 설치**
