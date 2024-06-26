@@ -1,7 +1,15 @@
 import React from "react";
 import SyncLoader from "react-spinners/SyncLoader";
 import LineSelector from "../components/selectors/LineSelector";
-import { PageTemplateProps } from "../types";
+
+interface PageTemplateProps {
+    title: string;
+    selectedLine: string;
+    handleLineChange: React.ChangeEventHandler<HTMLSelectElement>;
+    entitySelector: JSX.Element;
+    loading: boolean;
+    content: JSX.Element | null;
+}
 
 const PageTemplate: React.FC<PageTemplateProps> = ({ title, selectedLine, handleLineChange, loading, content, entitySelector }) => {
     return (

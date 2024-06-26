@@ -6,7 +6,7 @@ import PageTemplate from "./PageTemplate";
 import StationSelector from "../components/selectors/StationSelector";
 import ArrivalTable from "../components/tables/ArrivalTable";
 import { getTimeInSeconds, dateFromToday } from "../utils/timeUtils";
-import { ArrivalTimes, ArrivalInfo, RenderedTimetableData, RenderedTrainTime } from "../types";
+import { ArrivalTimes, ArrivalInfo, StationTableData, TrainTime } from "../types";
 
 const ArrivalInfoPage: React.FC = () => {
     const [selectedLine, setSelectedLine] = useState<string>("");
@@ -49,30 +49,30 @@ const ArrivalInfoPage: React.FC = () => {
     }, []);
 
     // 실시간 도착 정보 가져오기
-    const fetchArrivalInfo = async (stationID: string, timetableData: RenderedTimetableData) => {
+    const fetchArrivalInfo = async (stationID: string, timetableData: StationTableData) => {
         // Fetch arrival data
         const response = await axios.get(`https://api.leesj.me/subway/station/arrivals.json?base_time=realtime&id=${stationID}`);
         let arrivalData = response.data;
-        if (timetableData) arrivalData = fillTimetableData(arrivalData, timetableData, selectedLine, stationID);
+        if (timetableData) arrivalData = fillStationTableData(arrivalData, timetableData, selectedLine, stationID);
 
         setArrivalInfo(arrivalData);
         setLoading(false);
     };
 
     // timetable 전처리
-    const fillTimetableData = (arrivalData: ArrivalInfo, timetable: RenderedTimetableData, selectedLine: string, stationID: string) => {
+    const fillStationTableData = (arrivalData: ArrivalInfo, timetable: StationTableData, selectedLine: string, stationID: string) => {
         const currentTime = getTimeInSeconds(new Date().toTimeString().split(" ")[0]);
         function getSchedule(days: number, direction: string) {
             return timetable[dateFromToday(days)].filter((train) => train.direction === direction);
         }
 
         // 출발역인 경우, 출발 시간을 사용. 나머지는 도착 시간을 사용
-        function getTrainTime(train: RenderedTrainTime) {
+        function getTrainTime(train: TrainTime) {
             return train.arrivalTime ? train.arrivalTime : train.departureTime;
         }
 
         // 열차의 도착(출발)시각과 현재시각 차이를 초로 반환
-        function getRemainSec(train: RenderedTrainTime) {
+        function getRemainSec(train: TrainTime) {
             return getTimeInSeconds(getTrainTime(train)) - currentTime;
         }
 

@@ -6,13 +6,13 @@ import PageTemplate from "./PageTemplate";
 import StationSelector from "../components/selectors/StationSelector";
 import DirectionSelector from "../components/selectors/DirectionSelector";
 import DaySelector from "../components/selectors/DaySelector";
-import Timetable from "../components/tables/Timetable";
-import { RenderedTimetableData } from "../types";
+import StationTable from "../components/tables/StationTable";
+import { StationTableData } from "../types";
 
 const StationTablePage: React.FC = () => {
     const [selectedLine, setSelectedLine] = useState<string>("");
     const [selectedStation, setSelectedStation] = useState<string>("");
-    const [data, setData] = useState<RenderedTimetableData | null>(null);
+    const [data, setData] = useState<StationTableData | null>(null);
     const [direction, setDirection] = useState<string>("");
     const [day, setDay] = useState<string>(dateFromToday(0));
     const [loading, setLoading] = useState<boolean>(false);
@@ -45,7 +45,7 @@ const StationTablePage: React.FC = () => {
                     <DirectionSelector direction={direction} setDirection={setDirection} data={data} />
                     <DaySelector day={day} setDay={setDay} />
                 </div>
-                <Timetable trainTimes={filteredTrainTimes} />
+                <StationTable trainTimes={filteredTrainTimes} />
             </div>
         ) : null;
 

@@ -1,4 +1,9 @@
-import { Directions } from "../types";
+interface Directions {
+    [line: string]: {
+        up_info: string;
+        down_info: string;
+    };
+}
 
 const directions: Directions = {
     "1호선": { up_info: "다대포해수욕장", down_info: "노포" },

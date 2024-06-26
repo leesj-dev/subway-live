@@ -1,7 +1,12 @@
 import React from "react";
 import Select from "react-tailwindcss-select";
 import useSelect from "../../hooks/useSelect";
-import { DirectionSelectorProps } from "../../types";
+
+interface DirectionSelectorProps {
+    direction: string;
+    setDirection: (value: string) => void;
+    data: { [day: string]: { direction: string }[] };
+}
 
 const DirectionSelector: React.FC<DirectionSelectorProps> = ({ direction, setDirection, data }) => {
     const directionOptions = Array.from(new Set(data.weekday.map((train) => train.direction))).map((dir) => ({

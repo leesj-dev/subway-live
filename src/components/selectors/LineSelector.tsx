@@ -1,8 +1,12 @@
 import React from "react";
 import Select from "react-tailwindcss-select";
 import useSelect from "../../hooks/useSelect";
-import { LineSelectorProps } from "../../types";
 import stations from "../../constants/stations";
+
+interface LineSelectorProps {
+    selectedLine: string;
+    handleLineChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+}
 
 const LineSelector: React.FC<LineSelectorProps> = ({ selectedLine, handleLineChange }) => {
     const lineOptions = Object.keys(stations).map((line) => ({

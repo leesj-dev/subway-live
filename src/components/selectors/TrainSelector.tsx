@@ -1,9 +1,14 @@
 import React from "react";
 import Select from "react-tailwindcss-select";
 import useSelect from "../../hooks/useSelect";
-import { TrainSelectorProps } from "../../types";
 import directions from "../../constants/directions";
 import trains from "../../constants/trains";
+
+interface TrainSelectorProps {
+    selectedTrain: string;
+    handleTrainChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+    selectedLine: string;
+}
 
 const TrainSelector: React.FC<TrainSelectorProps> = ({ selectedTrain, handleTrainChange, selectedLine }) => {
     const trainOptions = selectedLine

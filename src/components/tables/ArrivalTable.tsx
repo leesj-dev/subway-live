@@ -1,6 +1,13 @@
 import React from "react";
-import { ArrivalTableProps } from "../../types";
+import { ArrivalTimes } from "../../types";
 import { formatTime } from "../../utils/timeUtils";
+
+interface ArrivalTableProps {
+    direction: string;
+    times: ArrivalTimes[] | null;
+    selectedLine?: string; // optional
+    stationID?: string; // optional
+}
 
 const ArrivalTable: React.FC<ArrivalTableProps> = ({ direction, times }) => {
     return (

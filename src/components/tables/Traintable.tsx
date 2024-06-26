@@ -1,7 +1,12 @@
-import { TraintableProps } from "../../types";
+import { StationTime } from "../../types";
 import stations from "../../constants/stations";
 
-const Traintable: React.FC<TraintableProps> = ({ stationTimes, selectedLine }) => {
+interface TrainTableProps {
+    stationTimes: StationTime[];
+    selectedLine: string;
+}
+
+const TrainTable: React.FC<TrainTableProps> = ({ stationTimes, selectedLine }) => {
     return (
         <div className="overflow-auto">
             <table className="mx-auto divide-y divide-gray-200 dark:divide-gray-700">
@@ -26,4 +31,4 @@ const Traintable: React.FC<TraintableProps> = ({ stationTimes, selectedLine }) =
     );
 };
 
-export default Traintable;
+export default TrainTable;

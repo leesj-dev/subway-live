@@ -1,8 +1,13 @@
 import React from "react";
 import Select from "react-tailwindcss-select";
 import useSelect from "../../hooks/useSelect";
-import { StationSelectorProps } from "../../types";
 import stations from "../../constants/stations";
+
+interface StationSelectorProps {
+    selectedStation: string;
+    handleStationChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+    selectedLine: string;
+}
 
 const StationSelector: React.FC<StationSelectorProps> = ({ selectedStation, handleStationChange, selectedLine }) => {
     const stationOptions =

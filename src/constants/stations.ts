@@ -1,4 +1,9 @@
-import { Stations } from "../types";
+interface Stations {
+    [line: string]: {
+        id: string;
+        name: string;
+    }[];
+}
 
 const stations: Stations = {
     "1호선": [

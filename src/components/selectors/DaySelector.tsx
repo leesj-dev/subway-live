@@ -1,7 +1,12 @@
 import React, { useEffect } from "react";
 import Select from "react-tailwindcss-select";
 import useSelect from "../../hooks/useSelect";
-import { DaySelectorProps } from "../../types";
+
+interface DaySelectorProps {
+    day: string;
+    setDay: (day: string) => void;
+    availableDays?: string[];
+}
 
 const DaySelector: React.FC<DaySelectorProps> = ({ day, setDay, availableDays }) => {
     const defaultDayOptions = [

@@ -4,13 +4,13 @@ import { dateFromToday } from "../utils/timeUtils";
 import PageTemplate from "./PageTemplate";
 import TrainSelector from "../components/selectors/TrainSelector";
 import DaySelector from "../components/selectors/DaySelector";
-import Traintable from "../components/tables/Traintable";
-import { RenderedTraintableData } from "../types";
+import Traintable from "../components/tables/TrainTable";
+import { TraintableData } from "../types";
 
 const TrainTablePage: React.FC = () => {
     const [selectedLine, setSelectedLine] = useState<string>("");
     const [selectedTrain, setSelectedTrain] = useState<string>("");
-    const [data, setData] = useState<RenderedTraintableData | null>(null);
+    const [data, setData] = useState<TraintableData | null>(null);
     const [day, setDay] = useState<string>(dateFromToday(0));
     const [availableDays, setAvailableDays] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(false);

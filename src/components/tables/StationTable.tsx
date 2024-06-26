@@ -1,6 +1,10 @@
-import { TimetableProps } from "../../types";
+import { TrainTime } from "../../types";
 
-const Timetable: React.FC<TimetableProps> = ({ trainTimes }) => {
+interface StationTableProps {
+    trainTimes: TrainTime[];
+}
+
+const StationTable: React.FC<StationTableProps> = ({ trainTimes }) => {
     return (
         <div className="overflow-auto">
             <table className="mx-auto divide-y divide-gray-200 dark:divide-gray-700">
@@ -29,4 +33,4 @@ const Timetable: React.FC<TimetableProps> = ({ trainTimes }) => {
     );
 };
 
-export default Timetable;
+export default StationTable;
