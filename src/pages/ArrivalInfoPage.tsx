@@ -9,22 +9,26 @@ import { getTimeInSeconds, dateFromToday } from "../utils/timeUtils";
 import { ArrivalTimes, ArrivalInfo, StationTableData, TrainTime } from "../types";
 
 const ArrivalInfoPage: React.FC = () => {
-    const [selectedLine, setSelectedLine] = useState<string>("");
-    const [selectedStation, setSelectedStation] = useState<string>("");
+    const [selectedLine, setSelectedLine] = useState<string>(sessionStorage.getItem("selectedLine") || "");
+    const [selectedStation, setSelectedStation] = useState<string>(sessionStorage.getItem("selectedStation") || "");
     const [arrivalInfo, setArrivalInfo] = useState<ArrivalInfo | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
     // 노선명 변경 시
     const handleLineChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedLine(e.target.value);
+        const line = e.target.value;
+        setSelectedLine(line);
+        sessionStorage.setItem("selectedLine", line);
         setSelectedStation("");
+        sessionStorage.setItem("selectedStation", "");
         setArrivalInfo(null);
     };
 
     // 역명 변경 시
     const handleStationChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const station = e.target.value;
+        sessionStorage.setItem("selectedStation", station);
         const stationID = stations[selectedLine]?.find((s) => s.name === station)?.id;
         if (!stationID) return;
         setSelectedStation(station);
@@ -47,6 +51,14 @@ const ArrivalInfoPage: React.FC = () => {
             if (intervalRef.current) clearInterval(intervalRef.current);
         };
     }, []);
+
+    // handle session storage data on mount
+    useEffect(() => {
+        if (selectedLine && selectedStation) {
+            handleStationChange({ target: { value: selectedStation } } as React.ChangeEvent<HTMLSelectElement>);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedLine, selectedStation]);
 
     // 실시간 도착 정보 가져오기
     const fetchArrivalInfo = async (stationID: string, timetableData: StationTableData) => {

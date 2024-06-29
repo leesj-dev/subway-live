@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { dateFromToday } from "../utils/timeUtils";
 import stations from "../constants/stations";
@@ -10,20 +10,24 @@ import StationTable from "../components/tables/StationTable";
 import { StationTableData } from "../types";
 
 const StationTablePage: React.FC = () => {
-    const [selectedLine, setSelectedLine] = useState<string>("");
-    const [selectedStation, setSelectedStation] = useState<string>("");
+    const [selectedLine, setSelectedLine] = useState<string>(sessionStorage.getItem("selectedLine") || "");
+    const [selectedStation, setSelectedStation] = useState<string>(sessionStorage.getItem("selectedStation") || "");
     const [data, setData] = useState<StationTableData | null>(null);
     const [direction, setDirection] = useState<string>("");
     const [day, setDay] = useState<string>(dateFromToday(0));
     const [loading, setLoading] = useState<boolean>(false);
 
     const handleLineChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedLine(e.target.value);
+        const line = e.target.value;
+        setSelectedLine(line);
+        sessionStorage.setItem("selectedLine", line);
         setSelectedStation("");
+        sessionStorage.setItem("selectedStation", "");
     };
 
     const handleStationChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const station = e.target.value;
+        sessionStorage.setItem("selectedStation", station);
         const stationID = stations[selectedLine]?.find((s) => s.name === station)?.id;
         if (!stationID) return;
         setSelectedStation(station);
@@ -35,6 +39,14 @@ const StationTablePage: React.FC = () => {
         setDirection(timetableResponse.data.weekday.length > 0 ? timetableResponse.data.weekday[0].direction : "");
         setLoading(false);
     };
+
+    // handle session storage data on mount
+    useEffect(() => {
+        if (selectedLine && selectedStation) {
+            handleStationChange({ target: { value: selectedStation } } as React.ChangeEvent<HTMLSelectElement>);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedLine, selectedStation]);
 
     const filteredTrainTimes = data?.[day].filter((train) => train.direction === direction) || [];
 

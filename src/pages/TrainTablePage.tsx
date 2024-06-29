@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { dateFromToday } from "../utils/timeUtils";
 import PageTemplate from "./PageTemplate";
@@ -8,8 +8,8 @@ import Traintable from "../components/tables/TrainTable";
 import { TraintableData } from "../types";
 
 const TrainTablePage: React.FC = () => {
-    const [selectedLine, setSelectedLine] = useState<string>("");
-    const [selectedTrain, setSelectedTrain] = useState<string>("");
+    const [selectedLine, setSelectedLine] = useState<string>(sessionStorage.getItem("selectedLine") || "");
+    const [selectedTrain, setSelectedTrain] = useState<string>(sessionStorage.getItem("selectedTrain") || "");
     const [data, setData] = useState<TraintableData | null>(null);
     const [day, setDay] = useState<string>(dateFromToday(0));
     const [availableDays, setAvailableDays] = useState<string[]>([]);
@@ -20,8 +20,11 @@ const TrainTablePage: React.FC = () => {
     };
 
     const handleLineChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedLine(e.target.value);
+        const line = e.target.value;
+        setSelectedLine(line);
+        sessionStorage.setItem("selectedLine", line);
         setSelectedTrain("");
+        sessionStorage.setItem("selectedTrain", "");
         setData(null);
         setAvailableDays([]);
     };
@@ -29,6 +32,7 @@ const TrainTablePage: React.FC = () => {
     const handleTrainChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const train = e.target.value;
         setSelectedTrain(train);
+        sessionStorage.setItem("selectedTrain", train);
         setLoading(true);
         const traintableResponse = await axios.get(`./traintable/${selectedLine}/${train}.json`);
         const availableDays = Object.keys(traintableResponse.data).filter(isAvailableDay);
@@ -37,6 +41,14 @@ const TrainTablePage: React.FC = () => {
         setData(traintableResponse.data);
         setLoading(false);
     };
+
+    // handle session storage data on mount
+    useEffect(() => {
+        if (selectedLine && selectedTrain) {
+            handleTrainChange({ target: { value: selectedTrain } } as React.ChangeEvent<HTMLSelectElement>);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedLine, selectedTrain]);
 
     const handleSetDay = (newDay: string) => {
         if (["holiday", "saturday", "weekday"].includes(newDay)) {
