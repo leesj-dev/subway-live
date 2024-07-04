@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Select from "react-tailwindcss-select";
 import useSelect from "../../hooks/useSelect";
 import directions from "../../constants/directions";
@@ -11,18 +11,22 @@ interface TrainSelectorProps {
 }
 
 const TrainSelector: React.FC<TrainSelectorProps> = ({ selectedTrain, handleTrainChange, selectedLine }) => {
-    const trainOptions = selectedLine
-        ? [
-              {
-                  label: `${directions[selectedLine]?.up_info}행`,
-                  options: trains[selectedLine]?.up_info.sort((a, b) => a.localeCompare(b)).map((train) => ({ label: train, value: train })),
-              },
-              {
-                  label: `${directions[selectedLine]?.down_info}행`,
-                  options: trains[selectedLine]?.down_info.sort((a, b) => a.localeCompare(b)).map((train) => ({ label: train, value: train })),
-              },
-          ]
-        : [];
+    const trainOptions = useMemo(
+        () =>
+            selectedLine
+                ? [
+                      {
+                          label: `${directions[selectedLine]?.up_info}행`,
+                          options: trains[selectedLine]?.up_info.sort((a, b) => a.localeCompare(b)).map((train) => ({ label: train, value: train })),
+                      },
+                      {
+                          label: `${directions[selectedLine]?.down_info}행`,
+                          options: trains[selectedLine]?.down_info.sort((a, b) => a.localeCompare(b)).map((train) => ({ label: train, value: train })),
+                      },
+                  ]
+                : [],
+        [selectedLine]
+    );
 
     const allOptions = trainOptions.flatMap((group) => group.options);
 

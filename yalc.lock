@@ -2,7 +2,6 @@
   "version": "v1",
   "packages": {
     "react-tailwindcss-select": {
-      "version": "1.8.6",
       "signature": "22e5ef6f6f3a778db38ffeaef9774e12",
       "file": true,
       "replaced": "github:leesj-dev/react-tailwindcss-select"

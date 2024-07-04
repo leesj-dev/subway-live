@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { dateFromToday } from "../utils/timeUtils";
 import stations from "../constants/stations";
@@ -16,6 +16,7 @@ const StationTablePage: React.FC = () => {
     const [direction, setDirection] = useState<string>("");
     const [day, setDay] = useState<string>(dateFromToday(0));
     const [loading, setLoading] = useState<boolean>(false);
+    const isFetchedRef = useRef<boolean>(false);
 
     const handleLineChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const line = e.target.value;
@@ -29,7 +30,7 @@ const StationTablePage: React.FC = () => {
         const station = e.target.value;
         sessionStorage.setItem("selectedStation", station);
         const stationID = stations[selectedLine]?.find((s) => s.name === station)?.id;
-        if (!stationID) return;
+        if (!stationID || loading) return;
         setSelectedStation(station);
         setLoading(true);
 
@@ -42,7 +43,8 @@ const StationTablePage: React.FC = () => {
 
     // handle session storage data on mount
     useEffect(() => {
-        if (selectedLine && selectedStation) {
+        if (!isFetchedRef.current && selectedLine && selectedStation) {
+            isFetchedRef.current = true;
             handleStationChange({ target: { value: selectedStation } } as React.ChangeEvent<HTMLSelectElement>);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

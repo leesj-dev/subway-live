@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { dateFromToday } from "../utils/timeUtils";
 import PageTemplate from "./PageTemplate";
@@ -14,6 +14,7 @@ const TrainTablePage: React.FC = () => {
     const [day, setDay] = useState<string>(dateFromToday(0));
     const [availableDays, setAvailableDays] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
+    const isFetchedRef = useRef<boolean>(false);
 
     const isAvailableDay = (day: string) => {
         return ["weekday", "saturday", "holiday"].includes(day);
@@ -44,14 +45,15 @@ const TrainTablePage: React.FC = () => {
 
     // handle session storage data on mount
     useEffect(() => {
-        if (selectedLine && selectedTrain) {
+        if (!isFetchedRef.current && selectedLine && selectedTrain) {
+            isFetchedRef.current = true;
             handleTrainChange({ target: { value: selectedTrain } } as React.ChangeEvent<HTMLSelectElement>);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedLine, selectedTrain]);
 
     const handleSetDay = (newDay: string) => {
-        if (["holiday", "saturday", "weekday"].includes(newDay)) {
+        if (isAvailableDay(newDay)) {
             setDay(newDay as "holiday" | "saturday" | "weekday");
         }
     };

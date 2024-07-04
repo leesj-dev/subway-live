@@ -14,6 +14,7 @@ const ArrivalInfoPage: React.FC = () => {
     const [arrivalInfo, setArrivalInfo] = useState<ArrivalInfo | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const isFetchedRef = useRef<boolean>(false);
 
     // 노선명 변경 시
     const handleLineChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -30,7 +31,7 @@ const ArrivalInfoPage: React.FC = () => {
         const station = e.target.value;
         sessionStorage.setItem("selectedStation", station);
         const stationID = stations[selectedLine]?.find((s) => s.name === station)?.id;
-        if (!stationID) return;
+        if (!stationID || loading) return;
         setSelectedStation(station);
         setLoading(true);
 
@@ -54,7 +55,8 @@ const ArrivalInfoPage: React.FC = () => {
 
     // handle session storage data on mount
     useEffect(() => {
-        if (selectedLine && selectedStation) {
+        if (!isFetchedRef.current && selectedLine && selectedStation) {
+            isFetchedRef.current = true;
             handleStationChange({ target: { value: selectedStation } } as React.ChangeEvent<HTMLSelectElement>);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

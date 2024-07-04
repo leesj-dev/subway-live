@@ -16,8 +16,10 @@ const useSelect = ({ options, selectedValue, handleChangeCallback }: UseSelectAr
 
     const handleChange = (value: SelectValue | null) => {
         if (value && !Array.isArray(value) && typeof value !== "string") {
+            setCurrentValue(value.value);
             handleChangeCallback(value.value);
         } else {
+            setCurrentValue("");
             handleChangeCallback("");
         }
     };
