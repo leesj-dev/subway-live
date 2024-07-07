@@ -13,7 +13,7 @@ const StationTablePage: React.FC = () => {
     const [selectedLine, setSelectedLine] = useState<string>(sessionStorage.getItem("selectedLine") || "");
     const [selectedStation, setSelectedStation] = useState<string>(sessionStorage.getItem("selectedStation") || "");
     const [data, setData] = useState<StationTableData | null>(null);
-    const [direction, setDirection] = useState<string>("");
+    const [direction, setDirection] = useState<string>(sessionStorage.getItem("direction") || "");
     const [day, setDay] = useState<string>(dateFromToday(0));
     const [loading, setLoading] = useState<boolean>(false);
     const isFetchedRef = useRef<boolean>(false);
@@ -24,6 +24,7 @@ const StationTablePage: React.FC = () => {
         sessionStorage.setItem("selectedLine", line);
         setSelectedStation("");
         sessionStorage.setItem("selectedStation", "");
+        setDirection("");
     };
 
     const handleStationChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -37,7 +38,7 @@ const StationTablePage: React.FC = () => {
         // 역명이 바뀔 때 시간표 정보를 가져옴
         const timetableResponse = await axios.get(`./timetable/${stationID}.json`);
         setData(timetableResponse.data);
-        setDirection(timetableResponse.data.weekday.length > 0 ? timetableResponse.data.weekday[0].direction : "");
+        setDirection(direction || timetableResponse.data.weekday[0]?.direction);
         setLoading(false);
     };
 
@@ -49,6 +50,11 @@ const StationTablePage: React.FC = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedLine, selectedStation]);
+
+    // save direction to session storage
+    useEffect(() => {
+        sessionStorage.setItem("direction", direction);
+    }, [direction]);
 
     const filteredTrainTimes = data?.[day].filter((train) => train.direction === direction) || [];
 
