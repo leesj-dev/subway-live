@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 import { dateFromToday } from "../utils/timeUtils";
 import PageTemplate from "./PageTemplate";
@@ -20,28 +20,32 @@ const TrainTablePage: React.FC = () => {
         return ["weekday", "saturday", "holiday"].includes(day);
     };
 
+    const handleSetDay = (newDay: string) => {
+        isAvailableDay(newDay) && setDay(newDay as "weekday" | "saturday" | "holiday");
+    };
+
     const handleLineChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const line = e.target.value;
         setSelectedLine(line);
-        sessionStorage.setItem("selectedLine", line);
         setSelectedTrain("");
-        sessionStorage.setItem("selectedTrain", "");
         setData(null);
         setAvailableDays([]);
     };
 
-    const handleTrainChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const train = e.target.value;
-        setSelectedTrain(train);
-        sessionStorage.setItem("selectedTrain", train);
-        setLoading(true);
-        const traintableResponse = await axios.get(`./traintable/${selectedLine}/${train}.json`);
-        const availableDays = Object.keys(traintableResponse.data).filter(isAvailableDay);
-        setAvailableDays(availableDays);
-        if (!isAvailableDay(day)) setDay(availableDays[0]);
-        setData(traintableResponse.data);
-        setLoading(false);
-    };
+    const handleTrainChange = useCallback(
+        async (e: React.ChangeEvent<HTMLSelectElement>) => {
+            const train = e.target.value;
+            setSelectedTrain(train);
+            setLoading(true);
+            const traintableResponse = await axios.get(`./traintable/${selectedLine}/${train}.json`);
+            const availableDays = Object.keys(traintableResponse.data).filter(isAvailableDay);
+            setAvailableDays(availableDays);
+            if (!isAvailableDay(day)) setDay(availableDays[0]);
+            setData(traintableResponse.data);
+            setLoading(false);
+        },
+        [selectedLine, day]
+    );
 
     // handle session storage data on mount
     useEffect(() => {
@@ -49,14 +53,16 @@ const TrainTablePage: React.FC = () => {
             isFetchedRef.current = true;
             handleTrainChange({ target: { value: selectedTrain } } as React.ChangeEvent<HTMLSelectElement>);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedLine, selectedTrain]);
+    }, [selectedLine, selectedTrain, handleTrainChange]);
 
-    const handleSetDay = (newDay: string) => {
-        if (isAvailableDay(newDay)) {
-            setDay(newDay as "holiday" | "saturday" | "weekday");
-        }
-    };
+    // save to session storage
+    useEffect(() => {
+        sessionStorage.setItem("selectedLine", selectedLine);
+    }, [selectedLine]);
+
+    useEffect(() => {
+        sessionStorage.setItem("selectedTrain", selectedTrain);
+    }, [selectedTrain]);
 
     const dataOfDay = data?.[day] || [];
 

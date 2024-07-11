@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 import { dateFromToday } from "../utils/timeUtils";
 import stations from "../constants/stations";
@@ -21,26 +21,26 @@ const StationTablePage: React.FC = () => {
     const handleLineChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const line = e.target.value;
         setSelectedLine(line);
-        sessionStorage.setItem("selectedLine", line);
         setSelectedStation("");
-        sessionStorage.setItem("selectedStation", "");
         setDirection("");
     };
 
-    const handleStationChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const station = e.target.value;
-        sessionStorage.setItem("selectedStation", station);
-        const stationID = stations[selectedLine]?.find((s) => s.name === station)?.id;
-        if (!stationID || loading) return;
-        setSelectedStation(station);
-        setLoading(true);
+    const handleStationChange = useCallback(
+        async (e: React.ChangeEvent<HTMLSelectElement>) => {
+            const station = e.target.value;
+            const stationID = stations[selectedLine]?.find((s) => s.name === station)?.id;
+            if (!stationID || loading) return;
+            setSelectedStation(station);
+            setLoading(true);
 
-        // 역명이 바뀔 때 시간표 정보를 가져옴
-        const timetableResponse = await axios.get(`./timetable/${stationID}.json`);
-        setData(timetableResponse.data);
-        setDirection(direction || timetableResponse.data.weekday[0]?.direction);
-        setLoading(false);
-    };
+            // 역명이 바뀔 때 시간표 정보를 가져옴
+            const timetableResponse = await axios.get(`./timetable/${stationID}.json`);
+            setData(timetableResponse.data);
+            setDirection(direction || timetableResponse.data.weekday[0]?.direction);
+            setLoading(false);
+        },
+        [selectedLine, direction, loading]
+    );
 
     // handle session storage data on mount
     useEffect(() => {
@@ -48,10 +48,17 @@ const StationTablePage: React.FC = () => {
             isFetchedRef.current = true;
             handleStationChange({ target: { value: selectedStation } } as React.ChangeEvent<HTMLSelectElement>);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedLine, selectedStation]);
+    }, [selectedLine, selectedStation, handleStationChange]);
 
-    // save direction to session storage
+    // save to session storage
+    useEffect(() => {
+        sessionStorage.setItem("selectedLine", selectedLine);
+    }, [selectedLine]);
+
+    useEffect(() => {
+        sessionStorage.setItem("selectedStation", selectedStation);
+    }, [selectedStation]);
+
     useEffect(() => {
         sessionStorage.setItem("direction", direction);
     }, [direction]);
