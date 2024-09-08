@@ -126,7 +126,7 @@ const ArrivalInfoPage: React.FC = () => {
 
     const content = arrivalInfo ? (
         <div>
-            <div className="mb-4 mr-[calc(50%-11rem)] md:mr-[calc(50%-22.75rem)]">
+            <div className="mb-3 mr-[calc(50%-11rem)] md:mr-[calc(50%-22.75rem)]">
                 <RefreshButton onRefresh={handleManualRefresh} remainingTime={remainingTime} />
             </div>
 
