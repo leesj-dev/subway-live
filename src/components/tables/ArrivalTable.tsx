@@ -27,7 +27,7 @@ const ArrivalTable: React.FC<ArrivalTableProps> = ({ direction, times }) => {
                             <tr key={`${direction}-${index}`} className="h-11 px-3 py-3 whitespace-nowrap">
                                 <td className="w-20 tabular-nums">{train.train_no}</td>
                                 <td className="w-40">{train.end_station_name}</td>
-                                <td className="w-28 tabular-nums">{train.remain_sec === 0 ? train.display_txt : formatTime(train.remain_sec, train.from_schedule ?? false)}</td>
+                                <td className="w-28 tabular-nums">{train.remain_sec === 0 ? train.display_txt || "도착" : formatTime(train.remain_sec, train.from_schedule ?? false)}</td>
                             </tr>
                         ))
                     ) : (
