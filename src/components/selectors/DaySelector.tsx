@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import Select from "react-tailwindcss-select";
 import useSelect from "../../hooks/useSelect";
+import { isAvailableDay } from "../../utils/timeUtils";
 
 interface DaySelectorProps {
     day: string;
@@ -27,7 +28,9 @@ const DaySelector: React.FC<DaySelectorProps> = ({ day, setDay, availableDays })
     const { selectedOption, handleChange } = useSelect({
         options: dayOptions,
         selectedValue: day,
-        handleChangeCallback: (value) => setDay(value),
+        handleChangeCallback: (value) => {
+            isAvailableDay(value) && setDay(value);
+        },
     });
 
     return (

@@ -34,6 +34,6 @@ export interface StationTime {
     direction: string;
 }
 
-export interface TraintableData {
+export interface TrainTableData {
     [day: string]: StationTime[];
 }

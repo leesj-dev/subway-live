@@ -1,53 +1,56 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import axios from "axios";
-import { dateFromToday } from "../utils/timeUtils";
+import directions from "../constants/directions";
 import PageTemplate from "./PageTemplate";
 import TrainSelector from "../components/selectors/TrainSelector";
 import DaySelector from "../components/selectors/DaySelector";
-import Traintable from "../components/tables/TrainTable";
-import { TraintableData } from "../types";
+import TrainTable from "../components/tables/TrainTable";
+import { dateFromToday, isAvailableDay } from "../utils/timeUtils";
+import { fetchTrainTableData } from "../utils/api";
+import { TrainTableData } from "../types";
+import { useSessionState } from "../hooks/useSessionState";
 
 const TrainTablePage: React.FC = () => {
-    const [selectedLine, setSelectedLine] = useState<string>(sessionStorage.getItem("selectedLine") || "");
-    const [selectedTrain, setSelectedTrain] = useState<string>(sessionStorage.getItem("selectedTrain") || "");
-    const [data, setData] = useState<TraintableData | null>(null);
+    const [selectedLine, setSelectedLine] = useSessionState("selectedLine", "");
+    const [selectedTrain, setSelectedTrain] = useSessionState("selectedTrain", "");
+    const [trainTableData, setTrainTableData] = useState<TrainTableData | null>(null);
     const [day, setDay] = useState<string>(dateFromToday(0));
     const [availableDays, setAvailableDays] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const isFetchedRef = useRef<boolean>(false);
 
-    const isAvailableDay = (day: string) => {
-        return ["weekday", "saturday", "holiday"].includes(day);
-    };
-
-    const handleSetDay = (newDay: string) => {
-        isAvailableDay(newDay) && setDay(newDay as "weekday" | "saturday" | "holiday");
-    };
-
+    // 노선명 변경 시
     const handleLineChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const line = e.target.value;
         setSelectedLine(line);
         setSelectedTrain("");
-        setData(null);
-        setAvailableDays([]);
+        sessionStorage.setItem("selectedStation", ""); // for ArrivalInfoPage & StationTablePage
+        sessionStorage.setItem("direction", directions[line].up_info); // for StationTablePage
     };
 
+    useEffect(() => {
+        setTrainTableData(null);
+        setAvailableDays([]);
+    }, [selectedLine]);
+
+    // 열차번호 변경 시
     const handleTrainChange = useCallback(
         async (e: React.ChangeEvent<HTMLSelectElement>) => {
             const train = e.target.value;
             setSelectedTrain(train);
             setLoading(true);
-            const traintableResponse = await axios.get(`./traintable/${selectedLine}/${train}.json`);
-            const availableDays = Object.keys(traintableResponse.data).filter(isAvailableDay);
+
+            // traintable fetching
+            const traintableData = await fetchTrainTableData(selectedLine, train);
+            const availableDays = Object.keys(traintableData).filter(isAvailableDay);
             setAvailableDays(availableDays);
             if (!isAvailableDay(day)) setDay(availableDays[0]);
-            setData(traintableResponse.data);
+            setTrainTableData(traintableData);
             setLoading(false);
         },
-        [selectedLine, day]
+        [selectedLine, day, setSelectedTrain]
     );
 
-    // handle session storage data on mount
+    // session storage data 존재 시 mount 때 fetching
     useEffect(() => {
         if (!isFetchedRef.current && selectedLine && selectedTrain) {
             isFetchedRef.current = true;
@@ -55,24 +58,13 @@ const TrainTablePage: React.FC = () => {
         }
     }, [selectedLine, selectedTrain, handleTrainChange]);
 
-    // save to session storage
-    useEffect(() => {
-        sessionStorage.setItem("selectedLine", selectedLine);
-    }, [selectedLine]);
-
-    useEffect(() => {
-        sessionStorage.setItem("selectedTrain", selectedTrain);
-    }, [selectedTrain]);
-
-    const dataOfDay = data?.[day] || [];
-
     const content =
-        selectedTrain && data ? (
+        selectedTrain && trainTableData ? (
             <div className="space-y-4">
                 <div className="flex justify-center gap-4">
-                    <DaySelector day={day} setDay={handleSetDay} availableDays={availableDays} />
+                    <DaySelector day={day} setDay={setDay} availableDays={availableDays} />
                 </div>
-                <Traintable stationTimes={dataOfDay} selectedLine={selectedLine} />
+                <TrainTable stationTimes={trainTableData?.[day] || []} selectedLine={selectedLine} />
             </div>
         ) : null;
 

@@ -11,9 +11,7 @@ export const formatTime = (seconds: number, fromSchedule: boolean) => {
 };
 
 export const dateFromToday = (days: number) => {
-    const holidays = ["0101", "0209", "0210", "0211", "0212", "0301", "0410", "0505", "0506", "0515", "0606", "0815", "0916", "0917", "0918", "1003", "1009", "1225"].map(
-        (date) => "2024" + date
-    );
+    const holidays = ["0101", "0209", "0210", "0211", "0212", "0301", "0410", "0505", "0506", "0515", "0606", "0815", "0916", "0917", "0918", "1003", "1009", "1225"].map((date) => "2024" + date);
     const now = new Date();
     const dateToCheck = new Date(now);
     if (now.getHours() === 0) dateToCheck.setDate(now.getDate() - 1); // 자정을 넘은 직후면 전날로 처리
@@ -22,4 +20,8 @@ export const dateFromToday = (days: number) => {
     if (holidays.some((holiday) => holiday === todayDate)) return "holiday";
     const currentDay = dateToCheck.getDay();
     return currentDay === 0 ? "holiday" : currentDay === 6 ? "saturday" : "weekday";
+};
+
+export const isAvailableDay = (day: string) => {
+    return ["weekday", "saturday", "holiday"].includes(day);
 };

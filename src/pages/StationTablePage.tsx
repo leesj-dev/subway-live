@@ -1,48 +1,53 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import axios from "axios";
-import { dateFromToday } from "../utils/timeUtils";
+import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import stations from "../constants/stations";
+import directions from "../constants/directions";
 import PageTemplate from "./PageTemplate";
 import StationSelector from "../components/selectors/StationSelector";
 import DirectionSelector from "../components/selectors/DirectionSelector";
 import DaySelector from "../components/selectors/DaySelector";
 import StationTable from "../components/tables/StationTable";
+import { dateFromToday } from "../utils/timeUtils";
+import { fetchTimetableData } from "../utils/api";
 import { StationTableData } from "../types";
+import { useSessionState } from "../hooks/useSessionState";
 
 const StationTablePage: React.FC = () => {
-    const [selectedLine, setSelectedLine] = useState<string>(sessionStorage.getItem("selectedLine") || "");
-    const [selectedStation, setSelectedStation] = useState<string>(sessionStorage.getItem("selectedStation") || "");
-    const [data, setData] = useState<StationTableData | null>(null);
-    const [direction, setDirection] = useState<string>(sessionStorage.getItem("direction") || "");
+    const [selectedLine, setSelectedLine] = useSessionState("selectedLine", "");
+    const [selectedStation, setSelectedStation] = useSessionState("selectedStation", "");
+    const [direction, setDirection] = useSessionState("direction", "");
+    const [stationTableData, setStationTableData] = useState<StationTableData | null>(null);
     const [day, setDay] = useState<string>(dateFromToday(0));
     const [loading, setLoading] = useState<boolean>(false);
     const isFetchedRef = useRef<boolean>(false);
 
+    // 노선명 변경 시
     const handleLineChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const line = e.target.value;
         setSelectedLine(line);
         setSelectedStation("");
-        setDirection("");
+        setStationTableData(null);
+        setDirection(directions[line].up_info); // direction 기본값 설정
+        sessionStorage.setItem("selectedTrain", ""); // for TrainTablePage
     };
 
+    // 역명 변경 시
     const handleStationChange = useCallback(
         async (e: React.ChangeEvent<HTMLSelectElement>) => {
-            const station = e.target.value;
-            const stationID = stations[selectedLine]?.find((s) => s.name === station)?.id;
-            if (!stationID || loading) return;
-            setSelectedStation(station);
+            const stationName = e.target.value;
+            setSelectedStation(stationName);
             setLoading(true);
+            const stationID = stations[selectedLine]?.find((s) => s.name === stationName)?.id;
+            if (!stationID || loading) return;
 
-            // 역명이 바뀔 때 시간표 정보를 가져옴
-            const timetableResponse = await axios.get(`./timetable/${stationID}.json`);
-            setData(timetableResponse.data);
-            setDirection(direction || timetableResponse.data.weekday[0]?.direction);
+            // timetable fetching
+            const timetableData = await fetchTimetableData(stationID);
+            setStationTableData(timetableData);
             setLoading(false);
         },
-        [selectedLine, direction, loading]
+        [loading, selectedLine, setSelectedStation]
     );
 
-    // handle session storage data on mount
+    // session storage data 존재 시 mount 때 fetching
     useEffect(() => {
         if (!isFetchedRef.current && selectedLine && selectedStation) {
             isFetchedRef.current = true;
@@ -50,26 +55,15 @@ const StationTablePage: React.FC = () => {
         }
     }, [selectedLine, selectedStation, handleStationChange]);
 
-    // save to session storage
-    useEffect(() => {
-        sessionStorage.setItem("selectedLine", selectedLine);
-    }, [selectedLine]);
-
-    useEffect(() => {
-        sessionStorage.setItem("selectedStation", selectedStation);
-    }, [selectedStation]);
-
-    useEffect(() => {
-        sessionStorage.setItem("direction", direction);
-    }, [direction]);
-
-    const filteredTrainTimes = data?.[day].filter((train) => train.direction === direction) || [];
+    const filteredTrainTimes = useMemo(() => {
+        return stationTableData?.[day].filter((train) => train.direction === direction) || [];
+    }, [stationTableData, day, direction]);
 
     const content =
-        selectedStation && data ? (
+        selectedStation && stationTableData ? (
             <div className="space-y-4">
                 <div className="flex justify-center gap-4">
-                    <DirectionSelector direction={direction} setDirection={setDirection} data={data} />
+                    <DirectionSelector direction={direction} setDirection={setDirection} data={stationTableData} />
                     <DaySelector day={day} setDay={setDay} />
                 </div>
                 <StationTable trainTimes={filteredTrainTimes} />

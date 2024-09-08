@@ -13,9 +13,9 @@ interface PageTemplateProps {
 
 const PageTemplate: React.FC<PageTemplateProps> = ({ title, selectedLine, handleLineChange, loading, content, entitySelector }) => {
     return (
-        <div className="px-4 py-6">
+        <div className="px-3 py-6">
             <h1 className="text-2xl text-gray-900 dark:text-gray-100 font-bold mb-8 break-keep">{title}</h1>
-            <div className="flex flex-wrap justify-center gap-4 md:gap-6 mb-8">
+            <div className="flex flex-wrap justify-center gap-4 md:gap-6 mb-6">
                 <LineSelector selectedLine={selectedLine} handleLineChange={handleLineChange} />
                 {entitySelector}
             </div>
