@@ -15,20 +15,9 @@ const TrainTablePage: React.FC = () => {
     const [trainTableData, setTrainTableData] = useState<TrainTableData | null>(null);
     const [day, setDay] = useState<string>(dateFromToday(0));
     const [availableDays, setAvailableDays] = useState<string[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
     const isFetchedRef = useRef<boolean>(false);
 
-    // 노선명 변경 시
-    const handleLineChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const line = e.target.value;
-        setSelectedLine(line);
-        setSelectedTrain("");
-        sessionStorage.setItem("selectedStation", ""); // for ArrivalInfoPage & StationTablePage
-        sessionStorage.setItem("direction", directions[line].up_info); // for StationTablePage
-    };
-
     useEffect(() => {
-        setTrainTableData(null);
         setAvailableDays([]);
     }, [selectedLine]);
 
@@ -68,16 +57,7 @@ const TrainTablePage: React.FC = () => {
             </div>
         ) : null;
 
-    return (
-        <PageTemplate
-            title="열차 시간표"
-            selectedLine={selectedLine}
-            handleLineChange={handleLineChange}
-            loading={loading}
-            content={content}
-            entitySelector={<TrainSelector selectedTrain={selectedTrain} handleTrainChange={handleTrainChange} selectedLine={selectedLine} />}
-        />
-    );
+    return <PageTemplate title="열차 시간표" content={content} entitySelector={<TrainSelector />} />;
 };
 
 export default TrainTablePage;

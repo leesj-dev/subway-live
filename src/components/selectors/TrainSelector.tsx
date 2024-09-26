@@ -1,16 +1,12 @@
 import React, { useMemo } from "react";
+import useStore from "../../store";
 import Select from "react-tailwindcss-select";
 import useSelect from "../../hooks/useSelect";
 import directions from "../../constants/directions";
 import trains from "../../constants/trains";
 
-interface TrainSelectorProps {
-    selectedTrain: string;
-    handleTrainChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-    selectedLine: string;
-}
-
-const TrainSelector: React.FC<TrainSelectorProps> = ({ selectedTrain, handleTrainChange, selectedLine }) => {
+const TrainSelector: React.FC = () => {
+    const { selectedLine, selectedTrain } = useStore();
     const trainOptions = useMemo(
         () =>
             selectedLine
@@ -21,7 +17,9 @@ const TrainSelector: React.FC<TrainSelectorProps> = ({ selectedTrain, handleTrai
                       },
                       {
                           label: `${directions[selectedLine]?.down_info}행`,
-                          options: trains[selectedLine]?.down_info.sort((a, b) => a.localeCompare(b)).map((train) => ({ label: train, value: train })),
+                          options: trains[selectedLine]?.down_info
+                              .sort((a, b) => a.localeCompare(b))
+                              .map((train) => ({ label: train, value: train })),
                       },
                   ]
                 : [],
@@ -33,7 +31,9 @@ const TrainSelector: React.FC<TrainSelectorProps> = ({ selectedTrain, handleTrai
     const { selectedOption, handleChange } = useSelect({
         options: allOptions,
         selectedValue: selectedTrain,
-        handleChangeCallback: (value) => handleTrainChange({ target: { value } } as React.ChangeEvent<HTMLSelectElement>),
+        handleChangeCallback: (value) => {
+            useStore.setState({ selectedTrain: value, arrivalInfo: null, trainTableData: null });
+        },
     });
 
     return (

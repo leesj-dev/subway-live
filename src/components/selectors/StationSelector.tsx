@@ -1,15 +1,11 @@
 import React, { useEffect, useMemo } from "react";
+import useStore from "../../store";
 import Select from "react-tailwindcss-select";
 import useSelect from "../../hooks/useSelect";
 import stations from "../../constants/stations";
 
-interface StationSelectorProps {
-    selectedStation: string;
-    handleStationChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-    selectedLine: string;
-}
-
-const StationSelector: React.FC<StationSelectorProps> = ({ selectedStation, handleStationChange, selectedLine }) => {
+const StationSelector: React.FC = () => {
+    const { selectedLine, selectedStation } = useStore();
     const stationOptions = useMemo(
         () =>
             stations[selectedLine]
@@ -24,7 +20,9 @@ const StationSelector: React.FC<StationSelectorProps> = ({ selectedStation, hand
     const { selectedOption, handleChange } = useSelect({
         options: stationOptions,
         selectedValue: selectedStation,
-        handleChangeCallback: (value) => handleStationChange({ target: { value } } as React.ChangeEvent<HTMLSelectElement>),
+        handleChangeCallback: (value) => {
+            useStore.setState({ selectedStation: value, arrivalInfo: null, stationTableData: null });
+        },
     });
 
     useEffect(() => {
@@ -40,7 +38,15 @@ const StationSelector: React.FC<StationSelectorProps> = ({ selectedStation, hand
                 역명
             </label>
             <div className="mt-1 block min-w-[10.5rem]">
-                <Select value={selectedOption} onChange={handleChange} options={stationOptions} isDisabled={!selectedLine} isSearchable noOptionsMessage="검색결과가 없습니다" placeholder="역 선택" />
+                <Select
+                    value={selectedOption}
+                    onChange={handleChange}
+                    options={stationOptions}
+                    isDisabled={!selectedLine}
+                    isSearchable
+                    noOptionsMessage="검색결과가 없습니다"
+                    placeholder="역 선택"
+                />
             </div>
         </div>
     );

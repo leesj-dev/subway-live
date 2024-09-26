@@ -8,7 +8,7 @@ interface UseSelectArgs {
 }
 
 const useSelect = ({ options, selectedValue, handleChangeCallback }: UseSelectArgs) => {
-    const [currentValue, setCurrentValue] = useState<string>(selectedValue);
+    const [currentValue, setCurrentValue] = useState(selectedValue);
 
     useEffect(() => {
         setCurrentValue(selectedValue);

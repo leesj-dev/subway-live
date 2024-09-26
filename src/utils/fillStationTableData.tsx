@@ -26,6 +26,11 @@ const fillStationTableData = (selectedLine: string, stationID: string, arrivalDa
         return stationID === stations[selectedLine]?.find((s) => s.name === direction)?.id;
     }
 
+    const result: ArrivalInfo = {
+        up_info: { times: null },
+        down_info: { times: null },
+    };
+
     for (const key of ["up_info", "down_info"] as const) {
         const direction = directions[selectedLine][key];
         const opposite_direction = directions[selectedLine][key === "up_info" ? "down_info" : "up_info"];
@@ -82,10 +87,10 @@ const fillStationTableData = (selectedLine: string, stationID: string, arrivalDa
                 times = [...times, ...upcomingTrains.slice(times.length)];
             }
         }
-        // 7. 업데이트된 times를 arrivalData에 저장
-        arrivalData[key].times = times;
+        // 7. 업데이트된 times를 result에 저장
+        result[key].times = times;
     }
-    return arrivalData;
+    return result;
 };
 
 export default fillStationTableData;
