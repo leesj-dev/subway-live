@@ -52,7 +52,7 @@ const ArrivalInfoPage: React.FC = () => {
             setSelectedStation(stationName);
             setLoading(true);
             const stationID = stations[selectedLine]?.find((s) => s.name === stationName)?.id;
-            if (!stationID || loading) return;
+            if (!stationID) return;
 
             // timetable fetching
             const timetableData = await fetchTimetableData(stationID);
@@ -82,7 +82,7 @@ const ArrivalInfoPage: React.FC = () => {
                 });
             }, 1000);
         },
-        [loading, selectedLine, setSelectedStation, fetchAndSetArrivalInfo]
+        [selectedLine, setSelectedStation, fetchAndSetArrivalInfo]
     );
 
     // component unmount 시 interval clear
@@ -108,7 +108,8 @@ const ArrivalInfoPage: React.FC = () => {
     // 매 초마다 남은 시간 업데이트 (1초씩 차감)
     useEffect(() => {
         if (arrivalInfo) {
-            const updateTimes = (times: ArrivalTimes[] | null) => times?.map((train) => ({ ...train, remain_sec: Math.max(0, train.remain_sec - 1) })) ?? [];
+            const updateTimes = (times: ArrivalTimes[] | null) =>
+                times?.map((train) => ({ ...train, remain_sec: Math.max(0, train.remain_sec - 1) })) ?? [];
             const intervalId = setInterval(() => {
                 setArrivalInfo((prev) =>
                     prev
@@ -144,7 +145,9 @@ const ArrivalInfoPage: React.FC = () => {
             handleLineChange={handleLineChange}
             loading={loading}
             content={content}
-            entitySelector={<StationSelector selectedStation={selectedStation} handleStationChange={handleStationChange} selectedLine={selectedLine} />}
+            entitySelector={
+                <StationSelector selectedStation={selectedStation} handleStationChange={handleStationChange} selectedLine={selectedLine} />
+            }
         />
     );
 };
