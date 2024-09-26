@@ -13,7 +13,7 @@ const TrainTablePage: React.FC = () => {
     const [selectedLine, setSelectedLine] = useSessionState("selectedLine", "");
     const [selectedTrain, setSelectedTrain] = useSessionState("selectedTrain", "");
     const [trainTableData, setTrainTableData] = useState<TrainTableData | null>(null);
-    const [day, setDay] = useState<string>(dateFromToday(0));
+    const [day, setDay] = useSessionState("day", dateFromToday(0));
     const [availableDays, setAvailableDays] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const isFetchedRef = useRef<boolean>(false);
@@ -47,7 +47,7 @@ const TrainTablePage: React.FC = () => {
             setTrainTableData(traintableData);
             setLoading(false);
         },
-        [selectedLine, day, setSelectedTrain]
+        [selectedLine, day, setDay, setSelectedTrain]
     );
 
     // session storage data 존재 시 mount 때 fetching

@@ -1,6 +1,7 @@
 import React from "react";
 import { ArrivalTimes } from "../../types";
 import { formatTime } from "../../utils/timeUtils";
+import { useNavigate } from "react-router-dom";
 
 interface ArrivalTableProps {
     direction: string;
@@ -10,6 +11,12 @@ interface ArrivalTableProps {
 }
 
 const ArrivalTable: React.FC<ArrivalTableProps> = ({ direction, times }) => {
+    const navigate = useNavigate();
+    const handleTrainClick = (trainNo: string) => {
+        sessionStorage.setItem("selectedTrain", trainNo);
+        navigate("/train");
+    };
+
     return (
         <div>
             <h2 className="text-lg font-bold mb-2 text-gray-900 dark:text-gray-100">{direction} 방향</h2>
@@ -25,9 +32,18 @@ const ArrivalTable: React.FC<ArrivalTableProps> = ({ direction, times }) => {
                     {times && times.length > 0 ? (
                         times.map((train, index) => (
                             <tr key={`${direction}-${index}`} className="h-11 px-3 py-3 whitespace-nowrap">
-                                <td className="w-20 tabular-nums">{train.train_no}</td>
+                                <td
+                                    className="w-20 tabular-nums hover:cursor-pointer hover:underline hover:text-gray-500 dark:hover:text-gray-400"
+                                    onClick={() => handleTrainClick(train.train_no)}
+                                >
+                                    {train.train_no}
+                                </td>
                                 <td className="w-40">{train.end_station_name}</td>
-                                <td className="w-28 tabular-nums">{train.remain_sec === 0 ? train.display_txt || "도착" : formatTime(train.remain_sec, train.from_schedule ?? false)}</td>
+                                <td className="w-28 tabular-nums">
+                                    {train.remain_sec === 0
+                                        ? train.display_txt || "도착"
+                                        : formatTime(train.remain_sec, train.from_schedule ?? false)}
+                                </td>
                             </tr>
                         ))
                     ) : (

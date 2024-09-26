@@ -16,7 +16,7 @@ const StationTablePage: React.FC = () => {
     const [selectedStation, setSelectedStation] = useSessionState("selectedStation", "");
     const [direction, setDirection] = useSessionState("direction", "");
     const [stationTableData, setStationTableData] = useState<StationTableData | null>(null);
-    const [day, setDay] = useState<string>(dateFromToday(0));
+    const [day, setDay] = useSessionState("day", dateFromToday(0));
     const [loading, setLoading] = useState<boolean>(false);
     const isFetchedRef = useRef<boolean>(false);
 
@@ -77,7 +77,9 @@ const StationTablePage: React.FC = () => {
             handleLineChange={handleLineChange}
             loading={loading}
             content={content}
-            entitySelector={<StationSelector selectedStation={selectedStation} handleStationChange={handleStationChange} selectedLine={selectedLine} />}
+            entitySelector={
+                <StationSelector selectedStation={selectedStation} handleStationChange={handleStationChange} selectedLine={selectedLine} />
+            }
         />
     );
 };

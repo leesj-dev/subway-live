@@ -32,9 +32,13 @@ const App: React.FC = () => {
 
     return (
         <Router basename="/subway-live">
-            <div className="flex flex-col min-h-screen w-screen dark:text-white">
+            <div className="flex flex-col min-h-screen dark:text-white">
                 <div id="topPanel" className="h-[52px] bg-gray-800 dark:bg-gray-800 px-4 py-2 flex items-center justify-between">
-                    <Link to="/" className="text-white px-2 py-1 hover:text-white text-xl font-semibold tracking-wide" onClick={() => setSelectedMenu("")}>
+                    <Link
+                        to="/"
+                        className="text-white px-2 py-1 hover:text-white text-xl font-semibold tracking-wide"
+                        onClick={() => setSelectedMenu("")}
+                    >
                         부산 도시철도 정보
                     </Link>
                     <ul id="menu" className="flex space-x-2">
@@ -43,7 +47,9 @@ const App: React.FC = () => {
                                 <Link
                                     to={Menu.link}
                                     className={`flex items-center space-x-2 px-2 py-1 rounded-md text-lg ${
-                                        selectedMenu === Menu.link ? "bg-gray-700 dark:bg-gray-700 text-white" : "hover:bg-gray-700 dark:hover:bg-gray-700 text-gray-300 dark:text-gray-400"
+                                        selectedMenu === Menu.link
+                                            ? "bg-gray-700 dark:bg-gray-700 text-white"
+                                            : "hover:bg-gray-700 dark:hover:bg-gray-700 text-gray-300 dark:text-gray-400"
                                     }`}
                                     onClick={() => setSelectedMenu(Menu.link)}
                                 >
