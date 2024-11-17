@@ -33,7 +33,7 @@ const App: React.FC = () => {
     return (
         <Router basename="/subway-live">
             <div className="flex flex-col min-h-screen dark:text-white">
-                <div id="topPanel" className="h-[52px] bg-gray-800 dark:bg-gray-800 px-4 py-2 flex items-center justify-between">
+                <div id="topPanel" className="h-[52px] bg-zinc-800 dark:bg-zinc-800 px-4 py-2 flex items-center justify-between rounded-b-lg">
                     <Link
                         to="/"
                         className="text-white px-2 py-1 hover:text-white text-xl font-semibold tracking-wide"
@@ -48,8 +48,8 @@ const App: React.FC = () => {
                                     to={Menu.link}
                                     className={`flex items-center space-x-2 px-2 py-1 rounded-md text-lg ${
                                         selectedMenu === Menu.link
-                                            ? "bg-gray-700 dark:bg-gray-700 text-white"
-                                            : "hover:bg-gray-700 dark:hover:bg-gray-700 text-gray-300 dark:text-gray-400"
+                                            ? "bg-zinc-700 dark:bg-zinc-700 text-white"
+                                            : "hover:bg-zinc-700 dark:hover:bg-zinc-700 text-zinc-300 dark:text-zinc-400"
                                     }`}
                                     onClick={() => setSelectedMenu(Menu.link)}
                                 >
@@ -60,7 +60,7 @@ const App: React.FC = () => {
                         ))}
                     </ul>
                 </div>
-                <div id="main" className="mt-[max(2vh,calc(15vh-90px))] grow p-1 text-center bg-gray-100 dark:bg-gray-900">
+                <div id="main" className="mt-[max(2vh,calc(15vh-90px))] grow p-1 text-center bg-zinc-100 dark:bg-zinc-900">
                     <Routes>
                         <Route path="/" element={<HomePage />} />
                         <Route path="/arrival" element={<ArrivalInfoPage />} />

@@ -22,7 +22,7 @@ const DirectionSelector: React.FC<DirectionSelectorProps> = ({ direction, setDir
 
     return (
         <div className="mb-4">
-            <label htmlFor="direction-select" className="block text-base font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="direction-select" className="block text-base font-medium text-zinc-700 dark:text-zinc-300">
                 방향
             </label>
             <div className="mt-1 block min-w-32">

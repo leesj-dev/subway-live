@@ -22,7 +22,7 @@ const LineSelector: React.FC<LineSelectorProps> = ({ selectedLine, handleLineCha
 
     return (
         <div className="mb-4">
-            <label htmlFor="station-select" className="block text-base font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="station-select" className="block text-base font-medium text-zinc-700 dark:text-zinc-300">
                 노선명
             </label>
             <div className="mt-1 block min-w-[10.5rem]">

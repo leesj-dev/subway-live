@@ -36,7 +36,7 @@ const StationSelector: React.FC<StationSelectorProps> = ({ selectedStation, hand
 
     return (
         <div className="mb-4">
-            <label htmlFor="station-select" className="block text-base font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="station-select" className="block text-base font-medium text-zinc-700 dark:text-zinc-300">
                 역명
             </label>
             <div className="mt-1 block min-w-[10.5rem]">

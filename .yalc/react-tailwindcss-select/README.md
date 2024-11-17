@@ -369,7 +369,7 @@ const App = () => {
                 <div className={`py-2 text-xs flex items-center justify-between`}>
                     // 👉 data represents each subgroup
                     <span className="font-bold">{data.label}</span>
-                    <span className="bg-gray-200 h-5 h-5 p-1.5 flex items-center justify-center rounded-full">
+                    <span className="bg-zinc-200 h-5 h-5 p-1.5 flex items-center justify-center rounded-full">
                         {data.options.length}
                     </span>
                 </div>
@@ -501,18 +501,18 @@ const App = () => {
             options={options}
             classNames={{
                 menuButton: ({ isDisabled }) => (
-                    `flex text-sm text-gray-500 border border-gray-300 rounded shadow-sm transition-all duration-300 focus:outline-none ${
+                    `flex text-sm text-zinc-500 border border-zinc-300 rounded shadow-sm transition-all duration-300 focus:outline-none ${
                         isDisabled
-                            ? "bg-gray-200"
-                            : "bg-white hover:border-gray-400 focus:border-blue-500 focus:ring focus:ring-blue-500/20"
+                            ? "bg-zinc-200"
+                            : "bg-white hover:border-zinc-400 focus:border-blue-500 focus:ring focus:ring-blue-500/20"
                     }`
                 ),
-                menu: "absolute z-10 w-full bg-white shadow-lg border rounded py-1 mt-1.5 text-sm text-gray-700",
+                menu: "absolute z-10 w-full bg-white shadow-lg border rounded py-1 mt-1.5 text-sm text-zinc-700",
                 listItem: ({ isSelected }) => (
                     `block transition duration-200 px-2 py-2 cursor-pointer select-none truncate rounded ${
                         isSelected
                             ? `text-white bg-blue-500`
-                            : `text-gray-500 hover:bg-blue-100 hover:text-blue-500`
+                            : `text-zinc-500 hover:bg-blue-100 hover:text-blue-500`
                     }`
                 )
             }}

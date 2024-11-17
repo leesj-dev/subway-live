@@ -38,7 +38,7 @@ const TrainSelector: React.FC<TrainSelectorProps> = ({ selectedTrain, handleTrai
 
     return (
         <div className="mb-4">
-            <label htmlFor="station-select" className="block text-base font-medium text-gray-700 dark:text-gray-300">
+            <label htmlFor="station-select" className="block text-base font-medium text-zinc-700 dark:text-zinc-300">
                 열차번호
             </label>
             <div className="mt-1 block min-w-[10.5rem]">
