@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import stations from "../constants/stations";
 import directions from "../constants/directions";
-import PageTemplate from "./PageTemplate";
+import SyncLoader from "react-spinners/SyncLoader";
+import LineSelector from "../components/selectors/LineSelector";
 import StationSelector from "../components/selectors/StationSelector";
 import ArrivalTable from "../components/tables/ArrivalTable";
 import fillStationTableData from "../utils/fillStationTableData";
@@ -139,16 +140,20 @@ const ArrivalInfoPage: React.FC = () => {
     ) : null;
 
     return (
-        <PageTemplate
-            title="실시간 도착정보"
-            selectedLine={selectedLine}
-            handleLineChange={handleLineChange}
-            loading={loading}
-            content={content}
-            entitySelector={
+        <div className="px-3 py-3">
+            <h1 className="text-2xl text-zinc-900 dark:text-zinc-100 font-bold mb-8 break-keep">실시간 도착정보</h1>
+            <div className="flex flex-wrap justify-center gap-4 md:gap-6 mb-4 md:mb-8">
+                <LineSelector selectedLine={selectedLine} handleLineChange={handleLineChange} />
                 <StationSelector selectedStation={selectedStation} handleStationChange={handleStationChange} selectedLine={selectedLine} />
-            }
-        />
+            </div>
+            {loading ? (
+                <div className="mt-[10vh]">
+                    <SyncLoader color={"#71717a"} size={20} /> {/* #71717a: zinc-500 */}
+                </div>
+            ) : (
+                content
+            )}
+        </div>
     );
 };
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import directions from "../constants/directions";
-import PageTemplate from "./PageTemplate";
+import SyncLoader from "react-spinners/SyncLoader";
+import LineSelector from "../components/selectors/LineSelector";
 import TrainSelector from "../components/selectors/TrainSelector";
 import DaySelector from "../components/selectors/DaySelector";
 import TrainTable from "../components/tables/TrainTable";
@@ -69,14 +70,20 @@ const TrainTablePage: React.FC = () => {
         ) : null;
 
     return (
-        <PageTemplate
-            title="열차 시간표"
-            selectedLine={selectedLine}
-            handleLineChange={handleLineChange}
-            loading={loading}
-            content={content}
-            entitySelector={<TrainSelector selectedTrain={selectedTrain} handleTrainChange={handleTrainChange} selectedLine={selectedLine} />}
-        />
+        <div className="px-3 py-3">
+            <h1 className="text-2xl text-zinc-900 dark:text-zinc-100 font-bold mb-8 break-keep">열차 시간표</h1>
+            <div className="flex flex-wrap justify-center gap-4 md:gap-6 mb-4 md:mb-8">
+                <LineSelector selectedLine={selectedLine} handleLineChange={handleLineChange} />
+                <TrainSelector selectedTrain={selectedTrain} handleTrainChange={handleTrainChange} selectedLine={selectedLine} />
+            </div>
+            {loading ? (
+                <div className="mt-[10vh]">
+                    <SyncLoader color={"#71717a"} size={20} /> {/* #71717a: zinc-500 */}
+                </div>
+            ) : (
+                content
+            )}
+        </div>
     );
 };
 
